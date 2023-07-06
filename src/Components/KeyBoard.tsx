@@ -12,10 +12,12 @@ const KeyBoard: React.FC<PropsKeyBoard> = ({ listButton }) => {
 
     const totalColumns = 14;
     const minButtonWidth = 100 / totalColumns;
-    const capsButtonWidth = minButtonWidth * 1.3;
-    const enterButtonWidth = minButtonWidth * 1.7;
-    const shiftButtonWidth = minButtonWidth * 2;
-    const spaceButtonWidth = minButtonWidth * 5;
+    const capsButtonWidth = minButtonWidth * 1.3 - 1;
+    const enterButtonWidth = minButtonWidth * 1.7 - 1;
+    const shiftButtonWidth = minButtonWidth * 2 - 1;
+    const spaceButtonWidth = minButtonWidth * 8 - 1;
+    const ctrlButtonWidth = minButtonWidth * 1.5 - 1;
+    const altButtonWidth = minButtonWidth * 1.5 - 1;
 
     const getButtonWidth = (value: string) => {
         if (value === "CAPS") {
@@ -30,14 +32,20 @@ const KeyBoard: React.FC<PropsKeyBoard> = ({ listButton }) => {
         if (value === "SPACE") {
             return `${spaceButtonWidth}%`;
         }
+        if (value === "CTRL") {
+            return `${ctrlButtonWidth}%`;
+        }
+        if (value === "ALT") {
+            return `${altButtonWidth}%`;
+        }
         return `${minButtonWidth}%`;
     };
 
     return (
-        <Grid justifyContent={'center'} container>
+        <Grid justifyContent={'space-between'} container>
             {listButton.map((button) => (
-                <Grid sx={{ width: getButtonWidth(button?.value), margin: 'auto' }} item key={button.id}>
-                    <Button size="small" key={button.id} sx={{ border: 1, width: "20px", minWidth: `90%` }}>
+                <Grid sx={{ width: getButtonWidth(button?.value), textAlign: 'center', marginY: "2px" }} item key={button.id}>
+                    <Button size="small" key={button.id} sx={{ border: 1, minWidth: `95%` }}>
                         {button?.value}
                     </Button>
                 </Grid>
