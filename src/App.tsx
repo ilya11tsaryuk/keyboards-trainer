@@ -5,14 +5,19 @@ import { SelectChangeEvent } from '@mui/material/Select';
 import ScreenLaptop from './Components/ScreenLaptop';
 import MySelect from './Components/MySelect';
 import { LANGUAGE, LEVEL, LIST_BUTTONS, TEXTS } from './constants';
+import { useSelector } from 'react-redux';
 
 function App() {
   const [curentText, setCurentText] = useState<string>('')
   const [language, setLanguage] = useState<string>('JavaScript')
   const [level, setLevel] = useState<string>('1')
 
+
+  const buttonRef = useSelector((state) => state.ref);
+
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const keyName = event.key;
+    // получить реф у которого значение равно event.key.toUpperCase() и сделать у него другой цвет фона
     console.log("Нажата клавиша:", keyName);
   };
 

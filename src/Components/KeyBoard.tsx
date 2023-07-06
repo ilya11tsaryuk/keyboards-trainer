@@ -1,15 +1,27 @@
-import { Box, Button, Grid, } from "@mui/material";
-import React, { useEffect, useRef } from "react";
-import Keyboard from "react-simple-keyboard";
-import 'react-simple-keyboard/build/css/index.css';
+import { Button, Grid, } from "@mui/material";
+import React, { useRef } from "react";
+import { setRef } from "../Redux/slices";
 
 type PropsKeyBoard = {
     listButton: { id: number, value: string }[];
-
 }
+type ButtonRefs = { [key: string]: React.RefObject<HTMLButtonElement> };
+
 
 const KeyBoard: React.FC<PropsKeyBoard> = ({ listButton }) => {
 
+    const buttonRefs = useRef<ButtonRefs>({}); // Обьект рефов для кнопок
+
+    const getButtonRef = (value: string) => {
+        // Получение рефа для кнопки по индексу
+        if (!buttonRefs.current[value]) {
+            buttonRefs.current[value] = React.createRef<HTMLButtonElement>();
+            // вызвать функцию которая поместит реф в стор
+        }
+        const buttonRef = buttonRefs.current[value]
+        setRef(buttonRef)
+        return buttonRef
+    };
     const totalColumns = 14;
     const minButtonWidth = 100 / totalColumns;
     const apostropheButtonWidth = minButtonWidth * 0.7 - 1;
@@ -53,7 +65,10 @@ const KeyBoard: React.FC<PropsKeyBoard> = ({ listButton }) => {
         <Grid justifyContent={'space-between'} container>
             {listButton.map((button) => (
                 <Grid sx={{ width: getButtonWidth(button?.value), textAlign: 'center', marginY: "2px" }} item key={button.id}>
-                    <Button size="small" key={button.id} sx={{ border: 1, minWidth: `95%` }}>
+                    <Button
+                        ref={getButtonRef(button.value)}
+                        size="small" key={button.id}
+                        sx={{ border: 1, minWidth: `95%`, }}>
                         {button?.value}
                     </Button>
                 </Grid>
