@@ -26,6 +26,20 @@ export const TEXTS = [
 
 export const LIST_BUTTONS = [
 
+    { id: 46, value: "`" },
+    { id: 47, value: "1" },
+    { id: 48, value: "2" },
+    { id: 49, value: "3" },
+    { id: 50, value: "4" },
+    { id: 51, value: "5" },
+    { id: 52, value: "6" },
+    { id: 53, value: "7" },
+    { id: 54, value: "8" },
+    { id: 55, value: "9" },
+    { id: 56, value: "0" },
+    { id: 57, value: "-" },
+    { id: 58, value: "=" },
+    { id: 59, value: "BCSP" },
     { id: 42, value: "TAB" },
     { id: 1, value: "Q" },
     { id: 2, value: "W" },
