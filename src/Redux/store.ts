@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import refSlice from './slices'
+import keyNameSlice from "./keyNameSlice";
 
 const store = configureStore({
     reducer: {
-        ref: refSlice.reducer 
+        keyName: keyNameSlice.reducer,
     }
 })
 
