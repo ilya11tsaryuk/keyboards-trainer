@@ -36,7 +36,7 @@ function App() {
       setStartTime(Date.now());
       console.log("updated start time");
     }
-    console.log("Нажата клавиша:", keyName);
+    // console.log("Нажата клавиша:", keyName);
   };
 
   const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -56,6 +56,11 @@ function App() {
     if (activeLiter !== taskText[indexCurrentLiter]) {
       setError((prev) => prev + 1)
     }
+  }
+
+  const getAccuracy = () => {
+    const newAccuracy = Math.floor(100 - (error / taskText.length * 100))
+    setAccuracy(newAccuracy)
   }
 
   const getSpeed = () => {
@@ -81,6 +86,12 @@ function App() {
     const newText = TEXTS.find(text => text.language === language && text.level === level);
     setTaskText(newText ? newText.value : 'Произошла ошибка')
   }, [language, level])
+
+  useEffect(() => {
+    if (error > 0) {
+      getAccuracy()
+    }
+  }, [error])
 
   return (
     <Box sx={{ width: "60%", margin: 'auto' }}>
