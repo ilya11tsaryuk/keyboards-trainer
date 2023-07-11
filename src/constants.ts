@@ -17,8 +17,7 @@ export const LEVEL = [
 ]
 
 export const TEXTS = [
-    { id: 1, language: "JavaScript", level: '1', value: `const App = () => {\n\tif (count > 0) {\n\t\tconsole.log("count > 0")\n\t} else {\n\t\tcount++\n\t}\n}
-    ` },
+    { id: 1, language: "JavaScript", level: '1', value: `const App = () => {\n\tif (count > 0) {\n\t\tconsole.log("count > 0")\n\t} else {\n\t\tcount++\n\t}\n}` },
     { id: 2, language: "Go", level: '1', value: "фрагмент кода на языке Go" },
     { id: 3, language: "Python", level: '1', value: "фрагмент кода на языке Python" },
     {
@@ -116,8 +115,8 @@ export const LIST_BUTTONS_PRESS_SHIFT = [
     { id: 8, value: "I" },
     { id: 9, value: "O" },
     { id: 10, value: "P" },
-    { id: 11, value: "[" },
-    { id: 12, value: "]" },
+    { id: 11, value: "{" },
+    { id: 12, value: "}" },
     { id: 44, value: "|" },
     { id: 45, value: "CAPS" },
     { id: 13, value: "A" },

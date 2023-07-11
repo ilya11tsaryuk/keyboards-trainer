@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import KeyBoard from './Components/KeyBoard';
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Modal, Typography } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 import ScreenLaptop from './Components/ScreenLaptop';
 import MySelect from './Components/MySelect';
@@ -21,7 +21,8 @@ function App() {
   const [language, setLanguage] = useState<string>('JavaScript')
   const [level, setLevel] = useState<string>('1')
   const [buttonList, setButtonList] = useState(LIST_BUTTONS);
-  const [startTime, setStartTime] = useState(0);
+  const [startTime, setStartTime] = useState<number>(0);
+  const [visibleModal, setVisibleModal] = useState<boolean>(false);
 
   const dispatch = useDispatch();
 
@@ -53,6 +54,9 @@ function App() {
       setButtonList(LIST_BUTTONS);
     }
     if (isFinish) {
+      // добавить остановку время для подсчета рузультатов
+      setVisibleModal(true)
+
       // запускать функцию проверки результатов
       // checkResult()
     }
@@ -76,6 +80,7 @@ function App() {
 
 
   const handleScreen = (event: React.ChangeEvent<HTMLInputElement>) => {
+
     if (activeLiter === "Enter" && taskText[indexCurrentLiter] === "\n") {
       let indexLiter = indexCurrentLiter + 1
       let tab = ""
@@ -114,6 +119,23 @@ function App() {
       setCpm(speedValue);
     }
   };
+  console.log(taskText.length)
+  console.log("индекс следующей буквы", indexCurrentLiter)
+
+  const restart = () => {
+    setActiveLiter("")
+    setIndexCurrentLiter(0)
+    setStartTime(0)
+    setAccuracy(100)
+    setCpm(0)
+    setError(0)
+    setText("")
+  }
+
+  const closeModal = () => {
+    restart()
+    setVisibleModal(false)
+  }
 
   const handleChangeLanguage = (event: SelectChangeEvent) => {
     setLanguage(event.target.value as string);
@@ -136,7 +158,41 @@ function App() {
     <Box sx={{ width: "60%", margin: 'auto' }}>
       <MySelect defaultValue={language} menuItems={LANGUAGE} styles={{ width: '20%' }} handleChange={handleChangeLanguage} />
       <MySelect defaultValue={level} menuItems={LEVEL} styles={{ width: '10%', textAlign: 'center' }} handleChange={handleChangeLevel} />
+      <Button onClick={restart}>restart</Button>
       <Box sx={{ display: 'flex' }}>
+        <Modal open={visibleModal} onClose={closeModal}>
+          <Box sx={{
+            position: 'absolute' as 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            border: '2px solid #000',
+            boxShadow: 24,
+            p: 4,
+            textAlign: 'center'
+          }}>
+            <Typography variant="h5" gutterBottom>
+              Твои результаты
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Скорость: {`${cpm} s/m`}
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Точность: {`${accuracy}%`}
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Количество ошибок: {error}
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+              <Button onClick={closeModal} variant='outlined'>
+                Начать заново
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
+
         <ScreenLaptop text={text} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} onChange={handleScreen} taskText={`${taskText}`} />
         <Box sx={{
           width: '20%', border: 1, borderRadius: 1, display: 'flex',
@@ -151,9 +207,9 @@ function App() {
           <Typography sx={{ opacity: 0.5 }}>{`accuracy`}</Typography>
           <Typography>{`${accuracy}%`}</Typography>
         </Box>
-      </Box>
+      </Box >
       <KeyBoard listButton={buttonList} />
-    </Box>
+    </Box >
   );
 }
 
