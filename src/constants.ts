@@ -17,10 +17,13 @@ export const LEVEL = [
 ]
 
 export const TEXTS = [
-    { id: 1, language: "JavaScript", level: '1', value: "фрагмент кода на языке JavaScript" },
+    { id: 1, language: "JavaScript", level: '1', value: `const App = () => {\n\tif (count > 0) {\n\t\tconsole.log("count > 0")\n\t} else {\n\t\tcount++\n\t}\n}
+    ` },
     { id: 2, language: "Go", level: '1', value: "фрагмент кода на языке Go" },
     { id: 3, language: "Python", level: '1', value: "фрагмент кода на языке Python" },
-    { id: 4, language: "Java", level: '1', value: "фрагмент кода на языке Java" },
+    {
+        id: 4, language: "Java", level: '1', value: `public class HelloWorld {\n\tpublic static void main(String[] args) {\n\tgreet("World");\t}\n\tpublic static void greet(String name) {\t\tSystem.out.println("Hello, " + name + "!");\t}\n} `
+    },
     { id: 5, language: "Php", level: '1', value: "фрагмент кода на языке Php" },
 ]
 
@@ -53,7 +56,7 @@ export const LIST_BUTTONS = [
     { id: 10, value: "P" },
     { id: 11, value: "[" },
     { id: 12, value: "]" },
-    { id: 44, value: "|" },
+    { id: 44, value: "\\" },
     { id: 45, value: "CAPS" },
     { id: 13, value: "A" },
     { id: 14, value: "S" },

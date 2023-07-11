@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import KeyBoard from './Components/KeyBoard';
 import { Box, Typography } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
@@ -39,6 +39,12 @@ function App() {
     // console.log("Нажата клавиша:", keyName);
   };
 
+  const isLastLiter = () => {
+    return text.length === taskText.length ? true : false
+  }
+
+  const isFinish = isLastLiter()
+
   const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     dispatch(removeLetter())
     getSpeed()
@@ -46,17 +52,54 @@ function App() {
     if (keyName === 'Shift') {
       setButtonList(LIST_BUTTONS);
     }
+    if (isFinish) {
+      // запускать функцию проверки результатов
+      // checkResult()
+    }
   };
 
+  // функция проверки результатов и если результат лучше чем есть в сторе то вызвать отправку нового результата
+  const checkResult = () => {
+    //  if (record.accurancy > 95 & record.speed > cpm) {
+    // fetchResult()
+  }
+
+
+  // функция отправки результата
+  const fetchResult = () => {
+    // bla bla bla send result
+  }
+
+  //const getRecord = () => {
+  //    
+  //  }
+
+
   const handleScreen = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (activeLiter === taskText[indexCurrentLiter]) {
-      setText(event.target.value)
-      setIndexCurrentLiter((prev) => prev + 1)
-    }
-    if (activeLiter !== taskText[indexCurrentLiter]) {
-      setError((prev) => prev + 1)
+    if (activeLiter === "Enter" && taskText[indexCurrentLiter] === "\n") {
+      let indexLiter = indexCurrentLiter + 1
+      let tab = ""
+      let counter = 1
+      while (taskText[indexLiter] === "\t") {
+        tab += "\t"
+        indexLiter++
+        counter++
+      }
+      setText((prevText) => prevText + `\n${tab}`);
+      setIndexCurrentLiter((prev) => prev + counter);
+    } else {
+      if (activeLiter === taskText[indexCurrentLiter]) {
+        setText(event.target.value)
+        setIndexCurrentLiter((prev) => prev + 1)
+      }
+      if (activeLiter !== taskText[indexCurrentLiter]) {
+        setError((prev) => prev + 1)
+      }
     }
   }
+  // console.log("следующий символ", taskText[indexCurrentLiter + 1])
+  // console.log("indexCurrentLiter", indexCurrentLiter)
+  // console.log("19", taskText[21])
 
   const getAccuracy = () => {
     const newAccuracy = Math.floor(100 - (error / taskText.length * 100))
@@ -65,23 +108,19 @@ function App() {
 
   const getSpeed = () => {
     if (startTime > 0) {
-      const currentTime = (Date.now() - startTime) / 1000; // Вычисляем прошедшее время
-      const lettersCount = taskText.length; // Получаем количество символов в тексте
-      const speedValue = Math.floor((lettersCount / currentTime) * 60); // Вычисляем скорость в символах в минуту (CPM)
+      const currentTime = (Date.now() - startTime) / 1000;
+      const lettersCount = taskText.length;
+      const speedValue = Math.floor((lettersCount / currentTime) * 60);
       setCpm(speedValue);
     }
   };
 
   const handleChangeLanguage = (event: SelectChangeEvent) => {
     setLanguage(event.target.value as string);
-    // непонятно обновляется language
   };
   const handleChangeLevel = (event: SelectChangeEvent) => {
     setLevel(event.target.value as string);
-    // непонятно обновляется level
   };
-
-  // потом расскоментировать !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   useEffect(() => {
     const newText = TEXTS.find(text => text.language === language && text.level === level);
     setTaskText(newText ? newText.value : 'Произошла ошибка')
