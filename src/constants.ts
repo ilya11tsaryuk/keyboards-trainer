@@ -17,13 +17,28 @@ export const LEVEL = [
 ]
 
 export const TEXTS = [
-    { id: 1, language: "JavaScript", level: '1', value: `const App = () => {\n\tif (count > 0) {\n\t\tconsole.log("count > 0")\n\t} else {\n\t\tcount++\n\t}\n}` },
+    { id: 1, language: "JavaScript", level: '2', value: `const App = () => {\n\tif (count > 0) {\n\t\tconsole.log("count > 0")\n\t} else {\n\t\tcount++\n\t}\n}` },
     { id: 2, language: "Go", level: '1', value: "фрагмент кода на языке Go" },
     { id: 3, language: "Python", level: '1', value: "фрагмент кода на языке Python" },
     {
         id: 4, language: "Java", level: '1', value: `public class HelloWorld {\n\tpublic static void main(String[] args) {\n\tgreet("World");\t}\n\tpublic static void greet(String name) {\t\tSystem.out.println("Hello, " + name + "!");\t}\n} `
     },
     { id: 5, language: "Php", level: '1', value: "фрагмент кода на языке Php" },
+    { id: 6, language: "JavaScript", level: '1', value: `let num1 = 5;\nlet num2 = 10;\nlet sum = num1 + num2;\nconsole.log("sum: " + sum);` },
+    { id: 7, language: "JavaScript", level: '1', value: `let fruits = ["apple", "banana", "orange"];\nfruits.push("kiwi");\nconsole.log(fruits);` },
+    { id: 8, language: "JavaScript", level: '1', value: `const array1 = [1, 2, 3];\nconst array2 = [4, 5, 6];\nconst newArray = array1.concat(array2);\nconsole.log(newArray); // Output: [1, 2, 3, 4, 5, 6]` },
+    { id: 9, language: "JavaScript", level: '1', value: `const array = [1, 2, 3];\nconst lastElement = array.pop();\nconsole.log(lastElement);\nconsole.log(array);` },
+    { id: 10, language: "JavaScript", level: '1', value: `const array = [2, 3]\nconst newLength = array.unshift(1)\nconsole.log(newLength)\nconsole.log(array);` },
+    { id: 11, language: "JavaScript", level: '1', value: `const array = [1, 2, 3, 4, 5];\nconst removedElements = array.splice(2, 2, 6, 7);\nconsole.log(removedElements);\nconsole.log(array);` },
+    { id: 12, language: "JavaScript", level: '2', value: `let num = parseInt(prompt("write number:"));\nif (num > 0) {\n\tconsole.log("number positive.");\n} else if (num < 0) {\n\tconsole.log("number negative.");\n} else {\n\tconsole.log("number = 0");\n}` },
+    { id: 13, language: "JavaScript", level: '1', value: `let number = Math.floor(Math.random() * 10) + 1;\nconsole.log("random number: " + number);` },
+    { id: 14, language: "JavaScript", level: '1', value: `let count = 0;\nwhile (count < 5) {\n\tconsole.log("Count: " + count);\n\tcount++;\n}` },
+    { id: 15, language: "JavaScript", level: '1', value: `let i = 0;\nwhile (i < 5) {\n\tconsole.log(i);\n\ti++;\n}` },
+    { id: 16, language: "JavaScript", level: '2', value: `const obj = { a: 1, b: 2, c: 3 };\nfor (let prop in obj) {\n\tconsole.log(prop + ": " + obj[prop]);\n}` },
+    { id: 17, language: "JavaScript", level: '2', value: `for (let i = 1; i <= 3; i++) {\n\tfor (let j = 1; j <= 2; j++) {\n\t\tconsole.log(i, j);\n\t}\n}` },
+    { id: 18, language: "JavaScript", level: '2', value: `outerLoop: for (let i = 0; i < 3; i++) {\n\tinnerLoop: for (let j = 0; j < 3; j++) {\n\t\tif (i === 1 && j === 1) {\n\t\t\tbreak outerLoop;\n\t\t}\n\t\tconsole.log(i, j);\n\t}\n}` },
+    { id: 19, language: "JavaScript", level: '2', value: `const person = {\n\tname: "John",\n\tage: 30,\n\tcity: "New York"\n};\n\nfor (let key in person) {\n\tconsole.log(key + ": " + person[key]);\n}` },
+    { id: 19, language: "JavaScript", level: '2', value: `const person = {\n\tname: "John",\n\tage: 30,\n\tcity: "New York"\n};\n\nfor (let value in person) {\n\tconsole.log(person[value]);\n}` },
 ]
 
 export const LIST_BUTTONS = [
