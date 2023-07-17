@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { removeLetter, setKeyName } from './Redux/keyNameSlice';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import ModalResult from './Components/ModalResult';
+import TypingInfo from './Components/TypingInfo';
 
 function App() {
   const [taskText, setTaskText] = useState<string>('')
@@ -59,24 +61,40 @@ function App() {
 
       // запускать функцию проверки результатов
       // checkResult()
+      checkResult()
+    }
+  };
+
+  const getRecord = () => {
+    try {
+      const recordJSON = localStorage.getItem('typingRecord');
+      return recordJSON ? JSON.parse(recordJSON) : 0;
+    } catch (error) {
+      console.error('Ошибка при получении рекорда из локального хранилища:', error);
+      return null;
+    }
+  };
+
+  const record = getRecord()
+
+  // функция отправки результата
+  const fetchResult = (record: number) => {
+    try {
+      const recordJSON = JSON.stringify(record);
+      localStorage.setItem('typingRecord', recordJSON);
+    } catch (error) {
+      console.error('Ошибка при сохранении рекорда в локальное хранилище:', error);
     }
   };
 
   // функция проверки результатов и если результат лучше чем есть в сторе то вызвать отправку нового результата
   const checkResult = () => {
-    //  if (record.accurancy > 95 & record.speed > cpm) {
-    // fetchResult()
+    if (accuracy > 95 && record < cpm) {
+      const newRecord = cpm
+      console.log(newRecord)
+      fetchResult(newRecord)
+    }
   }
-
-
-  // функция отправки результата
-  const fetchResult = () => {
-    // bla bla bla send result
-  }
-
-  //const getRecord = () => {
-  //    
-  //  }
 
 
   const handleScreen = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,9 +120,6 @@ function App() {
       }
     }
   }
-  // console.log("следующий символ", taskText[indexCurrentLiter + 1])
-  // console.log("indexCurrentLiter", indexCurrentLiter)
-  // console.log("19", taskText[21])
 
   const getAccuracy = () => {
     const newAccuracy = Math.floor(100 - (error / taskText.length * 100))
@@ -119,8 +134,6 @@ function App() {
       setCpm(speedValue);
     }
   };
-  console.log(taskText.length)
-  console.log("индекс следующей буквы", indexCurrentLiter)
 
   const restart = () => {
     setActiveLiter("")
@@ -130,6 +143,7 @@ function App() {
     setCpm(0)
     setError(0)
     setText("")
+    randomText()
   }
 
   const closeModal = () => {
@@ -143,10 +157,17 @@ function App() {
   const handleChangeLevel = (event: SelectChangeEvent) => {
     setLevel(event.target.value as string);
   };
+
+  const randomText = () => {
+    const matchingTexts = TEXTS.filter(text => text.language === language && text.level === level);
+    const randomIndex = Math.floor(Math.random() * matchingTexts.length);
+    const randomText = matchingTexts[randomIndex];
+    setTaskText(randomText ? randomText.value : 'Произошла ошибка');
+  }
+
   useEffect(() => {
-    const newText = TEXTS.find(text => text.language === language && text.level === level);
-    setTaskText(newText ? newText.value : 'Произошла ошибка')
-  }, [language, level])
+    randomText()
+  }, [language, level]);
 
   useEffect(() => {
     if (error > 0) {
@@ -159,54 +180,11 @@ function App() {
       <MySelect defaultValue={language} menuItems={LANGUAGE} styles={{ width: '20%' }} handleChange={handleChangeLanguage} />
       <MySelect defaultValue={level} menuItems={LEVEL} styles={{ width: '10%', textAlign: 'center' }} handleChange={handleChangeLevel} />
       <Button onClick={restart}>restart</Button>
+      <Button onClick={() => setVisibleModal(true)}>open modal</Button>
+      <ModalResult visibleModal={visibleModal} closeModal={closeModal} cpm={cpm} accuracy={accuracy} error={error} />
       <Box sx={{ display: 'flex' }}>
-        <Modal open={visibleModal} onClose={closeModal}>
-          <Box sx={{
-            position: 'absolute' as 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 400,
-            bgcolor: 'background.paper',
-            border: '2px solid #000',
-            boxShadow: 24,
-            p: 4,
-            textAlign: 'center'
-          }}>
-            <Typography variant="h5" gutterBottom>
-              Твои результаты
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-              Скорость: {`${cpm} s/m`}
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-              Точность: {`${accuracy}%`}
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-              Количество ошибок: {error}
-            </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
-              <Button onClick={closeModal} variant='outlined'>
-                Начать заново
-              </Button>
-            </Box>
-          </Box>
-        </Modal>
-
         <ScreenLaptop text={text} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} onChange={handleScreen} taskText={`${taskText}`} />
-        <Box sx={{
-          width: '20%', border: 1, borderRadius: 1, display: 'flex',
-          flexDirection: 'column', justifyContent: 'space-between', padding: 1, paddingY: 2
-        }}>
-          <Typography sx={{ opacity: 0.5 }}>{`record`}</Typography>
-          <Typography>{`771 s/m`}</Typography>
-          <Typography sx={{ opacity: 0.5 }}>{`speed`}</Typography>
-          <Typography>{`${cpm} s/m`}</Typography>
-          <Typography sx={{ opacity: 0.5 }}>{`error`}</Typography>
-          <Typography>{`${error}`}</Typography>
-          <Typography sx={{ opacity: 0.5 }}>{`accuracy`}</Typography>
-          <Typography>{`${accuracy}%`}</Typography>
-        </Box>
+        <TypingInfo record={record} cpm={cpm} accuracy={accuracy} error={error} />
       </Box >
       <KeyBoard listButton={buttonList} />
     </Box >

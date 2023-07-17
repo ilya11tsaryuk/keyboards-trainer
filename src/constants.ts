@@ -26,7 +26,7 @@ export const TEXTS = [
     { id: 5, language: "Php", level: '1', value: "фрагмент кода на языке Php" },
     { id: 6, language: "JavaScript", level: '1', value: `let num1 = 5;\nlet num2 = 10;\nlet sum = num1 + num2;\nconsole.log("sum: " + sum);` },
     { id: 7, language: "JavaScript", level: '1', value: `let fruits = ["apple", "banana", "orange"];\nfruits.push("kiwi");\nconsole.log(fruits);` },
-    { id: 8, language: "JavaScript", level: '1', value: `const array1 = [1, 2, 3];\nconst array2 = [4, 5, 6];\nconst newArray = array1.concat(array2);\nconsole.log(newArray); // Output: [1, 2, 3, 4, 5, 6]` },
+    { id: 8, language: "JavaScript", level: '1', value: `const array1 = [1, 2, 3];\nconst array2 = [4, 5, 6];\nconst newArray = array1.concat(array2);\nconsole.log(newArray);` },
     { id: 9, language: "JavaScript", level: '1', value: `const array = [1, 2, 3];\nconst lastElement = array.pop();\nconsole.log(lastElement);\nconsole.log(array);` },
     { id: 10, language: "JavaScript", level: '1', value: `const array = [2, 3]\nconst newLength = array.unshift(1)\nconsole.log(newLength)\nconsole.log(array);` },
     { id: 11, language: "JavaScript", level: '1', value: `const array = [1, 2, 3, 4, 5];\nconst removedElements = array.splice(2, 2, 6, 7);\nconsole.log(removedElements);\nconsole.log(array);` },
@@ -39,6 +39,17 @@ export const TEXTS = [
     { id: 18, language: "JavaScript", level: '2', value: `outerLoop: for (let i = 0; i < 3; i++) {\n\tinnerLoop: for (let j = 0; j < 3; j++) {\n\t\tif (i === 1 && j === 1) {\n\t\t\tbreak outerLoop;\n\t\t}\n\t\tconsole.log(i, j);\n\t}\n}` },
     { id: 19, language: "JavaScript", level: '2', value: `const person = {\n\tname: "John",\n\tage: 30,\n\tcity: "New York"\n};\n\nfor (let key in person) {\n\tconsole.log(key + ": " + person[key]);\n}` },
     { id: 19, language: "JavaScript", level: '2', value: `const person = {\n\tname: "John",\n\tage: 30,\n\tcity: "New York"\n};\n\nfor (let value in person) {\n\tconsole.log(person[value]);\n}` },
+    { id: 20, language: "JavaScript", level: '2', value: `let num = 10;\nif (num > 0) {\n\tconsole.log("Positive number");\n} else {\n\tconsole.log("Negative number");\n}` },
+    { id: 21, language: "JavaScript", level: '2', value: `let fruits = ["apple", "banana", "orange"];\nconsole.log(fruits.length);\nconsole.log(fruits[0]);\nfruits.push("grape");\nconsole.log(fruits);` },
+    { id: 22, language: "JavaScript", level: '2', value: `let x = 5;\nlet y = 2;\n\nconsole.log(x + y);\nconsole.log(x - y);\nconsole.log(x * y);\nconsole.log(x / y);` },
+    { id: 23, language: "JavaScript", level: '2', value: `let numbers = [1, 2, 3, 4, 5];\nlet squaredNumbers = numbers.map(num => num ** 2);\nconsole.log(squaredNumbers);` },
+    { id: 24, language: "JavaScript", level: '3', value: `function fetchData() {\n\treturn new Promise((resolve, reject) => {\n\t\tsetTimeout(() => {\n\t\t\tresolve("Data fetched successfully!");\n\t\t}, 2000);\n\t});\n}\n\nfetchData()\n\t.then(data => console.log(data))\n\t.catch(error => console.error(error));` },
+    { id: 25, language: "JavaScript", level: '3', value: `function factorial(n) {\n\tif (n <= 1) {\n\t\treturn 1;\n\t} else {\n\t\treturn n * factorial(n - 1);\n\t}\n}\n\nconsole.log(factorial(5));` },
+    { id: 26, language: "JavaScript", level: '3', value: `function outer() {\n\tlet count = 0;\n\tfunction inner() {\n\t\tcount++;\n\t\tconsole.log(count);\n\t}\n\treturn inner;\n}\nlet counter = outer();\ncounter();\ncounter();` },
+    { id: 27, language: "JavaScript", level: '3', value: `function divide(a, b) {\n\ttry {\n\t\tif (b === 0) {\n\t\t\tthrow new Error("Divide by zero error");\n\t\t}\n\t\treturn a / b;\n\t} catch (error) {\n\t\tconsole.error(error);\n\t}\n}\nconsole.log(divide(10, 0));` },
+    { id: 28, language: "JavaScript", level: '3', value: `async function getData() {\n\ttry {\n\t\tconst data = await fetchData();\n\t\tconsole.log(data);\n\t} catch (error) {\n\t\tconsole.error(error);\n\t}\n}\n\ngetData();` },
+    { id: 29, language: "JavaScript", level: '3', value: `function fibonacci(n, memo = {}) {\n\tif (n in memo) {\n\t\treturn memo[n];\n\t}\n\tif (n <= 2) {\n\t\treturn 1;\n\t}\n\tconst result = fibonacci(n - 1, memo) + fibonacci(n - 2, memo);\n\tmemo[n] = result;\n\treturn result;\n}\nconsole.log(fibonacci(5));` },
+    { id: 30, language: "JavaScript", level: '3', value: `function memoize(fn) {\n\tconst cache = {};\n\treturn function (...args) {\n\t\tconst key = JSON.stringify(args);\n\t\tif (key in cache) {\n\t\t\treturn cache[key];\n\t\t}\n\t\tconst result = fn.apply(this, args);\n\t\tcache[key] = result;\n\t\treturn result;\n\t};\n}` },
 ]
 
 export const LIST_BUTTONS = [
