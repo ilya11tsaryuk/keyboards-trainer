@@ -24,6 +24,9 @@ function App() {
   const [level, setLevel] = useState<string>('1')
   const [buttonList, setButtonList] = useState(LIST_BUTTONS);
   const [startTime, setStartTime] = useState<number>(0);
+  const [finishTime, setFinishTime] = useState<number>(0);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [timer, setTimer] = useState<string>("00:00");
   const [visibleModal, setVisibleModal] = useState<boolean>(false);
 
   const dispatch = useDispatch();
@@ -50,20 +53,20 @@ function App() {
 
   const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     dispatch(removeLetter())
-    getSpeed()
     const keyName = event.key;
     if (keyName === 'Shift') {
       setButtonList(LIST_BUTTONS);
     }
     if (isFinish) {
+      setFinishTime((Date.now() - startTime))
       // добавить остановку время для подсчета рузультатов
       setVisibleModal(true)
-
       // запускать функцию проверки результатов
-      // checkResult()
       checkResult()
     }
   };
+
+
 
   const getRecord = () => {
     try {
@@ -91,7 +94,8 @@ function App() {
   const checkResult = () => {
     if (accuracy > 95 && record < cpm) {
       const newRecord = cpm
-      console.log(newRecord)
+      console.log(newRecord, "newRecord")
+      console.log(cpm, "cpm")
       fetchResult(newRecord)
     }
   }
@@ -126,13 +130,23 @@ function App() {
     setAccuracy(newAccuracy)
   }
 
+  const formatTime = (timeInSeconds: number) => {
+    const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
+    const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
+    return `${minutes}:${seconds}`;
+  };
+
+  const getCuurentTime = () => {
+    const timeInSeconds = (Date.now() - startTime) / 1000;
+    setTimer(formatTime(timeInSeconds));
+    setCurrentTime(timeInSeconds)
+  };
+
   const getSpeed = () => {
-    if (startTime > 0) {
-      const currentTime = (Date.now() - startTime) / 1000;
-      const lettersCount = taskText.length;
-      const speedValue = Math.floor((lettersCount / currentTime) * 60);
-      setCpm(speedValue);
-    }
+    const lettersCount = text.length;
+    console.log(lettersCount, "leters count")
+    const speedValue = Math.floor((lettersCount / currentTime) * 60);
+    setCpm(speedValue);
   };
 
   const restart = () => {
@@ -175,12 +189,28 @@ function App() {
     }
   }, [error])
 
+  useEffect(() => {
+    if (startTime > 0) {
+      // Функция для обновления текущего времени каждую секунду
+      const intervalTime = setInterval(() => {
+        getCuurentTime();
+        getSpeed()
+      }, 1000);
+
+      // Очистка интервала при размонтировании компонента
+      return () => clearInterval(intervalTime);
+    }
+  }, [startTime, currentTime]);
+
+
   return (
     <Box sx={{ width: "60%", margin: 'auto' }}>
       <MySelect defaultValue={language} menuItems={LANGUAGE} styles={{ width: '20%' }} handleChange={handleChangeLanguage} />
       <MySelect defaultValue={level} menuItems={LEVEL} styles={{ width: '10%', textAlign: 'center' }} handleChange={handleChangeLevel} />
       <Button onClick={restart}>restart</Button>
       <Button onClick={() => setVisibleModal(true)}>open modal</Button>
+      <Button onClick={() => fetchResult(0)}>clean</Button>
+      <Typography>{timer}</Typography>
       <ModalResult visibleModal={visibleModal} closeModal={closeModal} cpm={cpm} accuracy={accuracy} error={error} />
       <Box sx={{ display: 'flex' }}>
         <ScreenLaptop text={text} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} onChange={handleScreen} taskText={`${taskText}`} />
