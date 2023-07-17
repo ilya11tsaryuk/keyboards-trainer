@@ -25,7 +25,6 @@ function App() {
   const [buttonList, setButtonList] = useState(LIST_BUTTONS);
   const [startTime, setStartTime] = useState<number>(0);
   const [finishTime, setFinishTime] = useState<number>(0);
-  const [currentTime, setCurrentTime] = useState<number>(0);
   const [timer, setTimer] = useState<string>("00:00");
   const [visibleModal, setVisibleModal] = useState<boolean>(false);
 
@@ -136,13 +135,14 @@ function App() {
     return `${minutes}:${seconds}`;
   };
 
-  const getCuurentTime = () => {
-    const timeInSeconds = (Date.now() - startTime) / 1000;
-    setTimer(formatTime(timeInSeconds));
-    setCurrentTime(timeInSeconds)
-  };
+  // const getCuurentTime = () => {
+  //   const timeInSeconds = (Date.now() - startTime) / 1000;
+  //   setCurrentTime(timeInSeconds)
+  // };
+  // сделать секунды отдельным компонентом
 
   const getSpeed = () => {
+    const currentTime = (Date.now() - startTime) / 1000
     const lettersCount = text.length;
     console.log(lettersCount, "leters count")
     const speedValue = Math.floor((lettersCount / currentTime) * 60);
@@ -190,17 +190,16 @@ function App() {
   }, [error])
 
   useEffect(() => {
-    if (startTime > 0) {
+    if (startTime > 0 && isFinish === false) {
       // Функция для обновления текущего времени каждую секунду
       const intervalTime = setInterval(() => {
-        getCuurentTime();
         getSpeed()
       }, 1000);
 
       // Очистка интервала при размонтировании компонента
       return () => clearInterval(intervalTime);
     }
-  }, [startTime, currentTime]);
+  });
 
 
   return (
