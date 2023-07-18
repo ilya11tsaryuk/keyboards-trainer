@@ -13,24 +13,25 @@ type ScreenLaptopProps = {
 
 const ScreenLaptop: React.FC<ScreenLaptopProps> = ({ taskText, onChange, onKeyDown, onKeyUp, text }) => {
 
+    const inputStyle = {
+        height: "100%",
+        alignItems: 'start'
+    };
+
     return (
-        <Box sx={{ width: "80%", position: 'relative', height: "100%", display: 'flex' }}> 
+        <Box sx={{ width: "100%", display: 'flex', position: 'relative' }}>
             <TextField
-                sx={{ opacity: 0.3, height: "100%" }}
+                sx={{ opacity: 0.3 }}
                 fullWidth multiline minRows={10} value={taskText}
-                
-            >
-            </TextField>
-            <Box>
-                <TextField
-                    value={text}
-                    type="text"
-                    onKeyUp={onKeyUp} onKeyDown={onKeyDown}
-                    onChange={onChange}
-                    fullWidth minRows={10} multiline
-                    sx={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, height: '100%' }} /> 
-                    {/* position absolute */}
-            </Box>
+            />
+            <TextField
+                InputProps={{ style: inputStyle }}
+                sx={{ position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, border: 1, borderRadius: 1 }}
+                value={text}
+                multiline
+                onKeyUp={onKeyUp} onKeyDown={onKeyDown}
+                onChange={onChange}
+            />
         </Box>
 
     )

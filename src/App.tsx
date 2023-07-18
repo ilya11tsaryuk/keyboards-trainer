@@ -205,14 +205,14 @@ function App() {
 
 
   return (
-    <Box sx={{ width: "60%", margin: 'auto' }}>
+    <Box sx={{ width: "60%", margin: 'auto', marginTop: 2 }}>
       <MySelect defaultValue={language} menuItems={LANGUAGE} styles={{ width: '20%' }} handleChange={handleChangeLanguage} />
       <MySelect defaultValue={level} menuItems={LEVEL} styles={{ width: '10%', textAlign: 'center' }} handleChange={handleChangeLevel} />
       <Button onClick={restart}>restart</Button>
       <Button onClick={() => setVisibleModal(true)}>open modal</Button>
       <Button onClick={() => fetchResult(0)}>clean</Button>
       <ModalResult visibleModal={visibleModal} closeModal={closeModal} cpm={cpm} accuracy={accuracy} error={error} />
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', gap: 1, marginY: 2 }}>
         <ScreenLaptop text={text} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} onChange={handleScreen} taskText={`${taskText}`} />
         <TypingInfo timer={timer} record={record} cpm={cpm} accuracy={accuracy} error={error} />
       </Box >
