@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import KeyBoard from './Components/KeyBoard';
-import { Box, Button, Modal, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 import ScreenLaptop from './Components/ScreenLaptop';
 import MySelect from './Components/MySelect';
 import { LANGUAGE, LEVEL, LIST_BUTTONS, LIST_BUTTONS_PRESS_SHIFT, TEXTS } from './constants';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { removeLetter, setKeyName } from './Redux/keyNameSlice';
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import ModalResult from './Components/ModalResult';
 import TypingInfo from './Components/TypingInfo';
 
@@ -99,7 +97,6 @@ function App() {
     }
   }
 
-
   const handleScreen = (event: React.ChangeEvent<HTMLInputElement>) => {
 
     if (activeLiter === "Enter" && taskText[indexCurrentLiter] === "\n") {
@@ -129,22 +126,9 @@ function App() {
     setAccuracy(newAccuracy)
   }
 
-  const formatTime = (timeInSeconds: number) => {
-    const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
-    const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
-    return `${minutes}:${seconds}`;
-  };
-
-  // const getCuurentTime = () => {
-  //   const timeInSeconds = (Date.now() - startTime) / 1000;
-  //   setCurrentTime(timeInSeconds)
-  // };
-  // сделать секунды отдельным компонентом
-
   const getSpeed = () => {
     const currentTime = (Date.now() - startTime) / 1000
     const lettersCount = text.length;
-    console.log(lettersCount, "leters count")
     const speedValue = Math.floor((lettersCount / currentTime) * 60);
     setCpm(speedValue);
   };
@@ -157,6 +141,7 @@ function App() {
     setCpm(0)
     setError(0)
     setText("")
+    setTimer("00:00")
     randomText()
   }
 
@@ -189,17 +174,34 @@ function App() {
     }
   }, [error])
 
+  const formatTime = (time: number) => {
+    return time < 10 ? `0${time}` : `${time}`;
+  };
+
+  const startTimer = () => {
+    const [minutes, seconds] = timer.split(":").map((time) => parseInt(time));
+    let totalSeconds = minutes * 60 + seconds;
+    totalSeconds++;
+
+    const newMinutes = Math.floor(totalSeconds / 60);
+    const newSeconds = totalSeconds % 60;
+    const formattedTime = `${formatTime(newMinutes)}:${formatTime(newSeconds)}`;
+
+    setTimer(formattedTime);
+  };
+
   useEffect(() => {
-    if (startTime > 0 && isFinish === false) {
+    if (startTime > 0 && !isFinish) {
       // Функция для обновления текущего времени каждую секунду
       const intervalTime = setInterval(() => {
-        getSpeed()
+        getSpeed();
+        startTimer();
       }, 1000);
 
       // Очистка интервала при размонтировании компонента
       return () => clearInterval(intervalTime);
     }
-  });
+  }, [startTime, isFinish, timer]);
 
 
   return (
@@ -209,11 +211,10 @@ function App() {
       <Button onClick={restart}>restart</Button>
       <Button onClick={() => setVisibleModal(true)}>open modal</Button>
       <Button onClick={() => fetchResult(0)}>clean</Button>
-      <Typography>{timer}</Typography>
       <ModalResult visibleModal={visibleModal} closeModal={closeModal} cpm={cpm} accuracy={accuracy} error={error} />
       <Box sx={{ display: 'flex' }}>
         <ScreenLaptop text={text} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} onChange={handleScreen} taskText={`${taskText}`} />
-        <TypingInfo record={record} cpm={cpm} accuracy={accuracy} error={error} />
+        <TypingInfo timer={timer} record={record} cpm={cpm} accuracy={accuracy} error={error} />
       </Box >
       <KeyBoard listButton={buttonList} />
     </Box >

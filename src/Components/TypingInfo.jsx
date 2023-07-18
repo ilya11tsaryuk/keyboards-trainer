@@ -1,7 +1,7 @@
 import react from "react";
 import { Box, Typography } from "@mui/material"
 
-const TypingInfo = ({ cpm, accuracy, error, record }) => {
+const TypingInfo = ({ cpm, accuracy, error, record, timer }) => {
   return (
     <Box
       sx={{
@@ -12,9 +12,10 @@ const TypingInfo = ({ cpm, accuracy, error, record }) => {
         flexDirection: "column",
         justifyContent: "space-between",
         padding: 1,
-        paddingY: 2,
       }}
     >
+      <Typography sx={{ opacity: 0.5 }}>{`time`}</Typography>
+      <Typography>{`${timer}`}</Typography>
       <Typography sx={{ opacity: 0.5 }}>{`record`}</Typography>
       <Typography>{`${record}`}</Typography>
       <Typography sx={{ opacity: 0.5 }}>{`speed`}</Typography>
