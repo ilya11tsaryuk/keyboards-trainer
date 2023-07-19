@@ -1,5 +1,6 @@
 import { Box, TextField } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { CSSProperties } from 'react';
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { dark, vs } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
@@ -15,22 +16,51 @@ const ScreenLaptop: React.FC<ScreenLaptopProps> = ({ taskText, onChange, onKeyDo
 
     const inputStyle = {
         height: "100%",
-        alignItems: 'start'
+        alignItems: 'start',
+        // overflow: 'auto',
+        // border: "none"
+    };
+
+
+    const taskTextRef = useRef<HTMLInputElement>(null);
+    const textRef = useRef<HTMLInputElement>(null);
+
+    const handleScroll = (event: React.UIEvent<HTMLInputElement>) => {
+        console.log("working")
+        const { scrollTop } = event.currentTarget;
+        const targetInput = event.currentTarget.id === 'input1' ? 'input2' : 'input1';
+        const targetInputRef = targetInput === 'input1' ? taskTextRef : textRef;
+
+        if (targetInputRef.current) {
+            targetInputRef.current.scrollTop = scrollTop;
+        }
     };
 
     return (
-        <Box sx={{ width: "100%", display: 'flex', position: 'relative' }}>
+        <Box sx={{
+            width: "100%", display: 'flex',
+             position: 'relative'
+        }}>
             <TextField
-                sx={{ opacity: 0.3 }}
-                fullWidth multiline minRows={10} value={taskText}
+                inputRef={taskTextRef}
+                inputProps={{ id: 'input1', onScroll: handleScroll }} // вот так работает синхронный скрол
+                sx={{ opacity: 0.3, outline: 'none' }}
+                fullWidth multiline
+                minRows={10}
+                maxRows={10}
+                value={taskText}
             />
             <TextField
-                InputProps={{ style: inputStyle }}
-                sx={{ position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, border: 1, borderRadius: 1 }}
+                // InputProps={{ style: inputStyle}} // работает без этого
+                multiline={true}
+                minRows={10}
+                maxRows={10}
+                sx={{ position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, }} // add border
                 value={text}
-                multiline
                 onKeyUp={onKeyUp} onKeyDown={onKeyDown}
                 onChange={onChange}
+                inputProps={{ id: 'input2', onScroll: handleScroll }}
+                inputRef={textRef}
             />
         </Box>
 

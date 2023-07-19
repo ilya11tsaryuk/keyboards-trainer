@@ -165,7 +165,7 @@ function App() {
   }
 
   useEffect(() => {
-    randomText()
+    restart()
   }, [language, level]);
 
   useEffect(() => {

@@ -47,6 +47,7 @@ export const TEXTS = [
     { id: 28, language: "JavaScript", level: '3', value: `async function getData() {\n\ttry {\n\t\tconst data = await fetchData();\n\t\tconsole.log(data);\n\t} catch (error) {\n\t\tconsole.error(error);\n\t}\n}\n\ngetData();` },
     { id: 29, language: "JavaScript", level: '3', value: `function fibonacci(n, memo = {}) {\n\tif (n in memo) {\n\t\treturn memo[n];\n\t}\n\tif (n <= 2) {\n\t\treturn 1;\n\t}\n\tconst result = fibonacci(n - 1, memo) + fibonacci(n - 2, memo);\n\tmemo[n] = result;\n\treturn result;\n}\nconsole.log(fibonacci(5));` },
     { id: 30, language: "JavaScript", level: '3', value: `function memoize(fn) {\n\tconst cache = {};\n\treturn function (...args) {\n\t\tconst key = JSON.stringify(args);\n\t\tif (key in cache) {\n\t\t\treturn cache[key];\n\t\t}\n\t\tconst result = fn.apply(this, args);\n\t\tcache[key] = result;\n\t\treturn result;\n\t};\n}` },
+    { id: 31, language: "JavaScript", level: '3', value: `f\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\n` },
 ]
 
 export const LIST_BUTTONS = [
