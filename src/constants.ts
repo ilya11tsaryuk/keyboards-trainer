@@ -13,6 +13,9 @@ export const LEVEL = [
     { id: 3, value: "3" },
 ]
 
+export const SECRET_API_TOKEN = 'patcWFaHJWHMXh3lp.6df4c2708c156e1be93ec43d54b70642c7820b8a3db94c85fd23cd95668e7757'
+export const ID_DATA_BASE = 'appc46kCCAD8EzjgZ'
+
 export const TEXTS = [
     { id: 1, language: "JavaScript", level: '2', value: `const App = () => {\n\tif (count > 0) {\n\t\tconsole.log("count > 0")\n\t} else {\n\t\tcount++\n\t}\n}` },
     { id: 2, language: "Go", level: '1', value: "фрагмент кода на языке Go" },

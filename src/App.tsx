@@ -9,8 +9,18 @@ import { useDispatch } from 'react-redux';
 import { removeLetter, setKeyName } from './Redux/keyNameSlice';
 import ModalResult from './Components/ModalResult';
 import TypingInfo from './Components/TypingInfo';
+import { ID_DATA_BASE, SECRET_API_TOKEN } from "./constants";
+import Airtable from 'airtable'
+
+type ObjectTypeText = {
+  id: number,
+  level: number
+  language: string,
+  value: string
+}
 
 function App() {
+  const [TEXTS, setTEXTS] = useState<ObjectTypeText[]>([])
   const [taskText, setTaskText] = useState<string>('')
   const [text, setText] = useState<string>('')
   const [cpm, setCpm] = useState<number>(0);
@@ -27,6 +37,19 @@ function App() {
   const [visibleModal, setVisibleModal] = useState<boolean>(false);
 
   const dispatch = useDispatch();
+
+  const base = new Airtable({ apiKey: SECRET_API_TOKEN }).base(ID_DATA_BASE);
+  const filterFormula = `AND(level = "${level}", language = "${language}")`;
+
+  base('tasks').select({
+    filterByFormula: filterFormula,
+  }).eachPage(function page(record, fetchNextPage) {
+    const newText: any = []
+    record.forEach(record => newText.push(record?.fields))
+      setTEXTS(newText)
+      console.log(TEXTS)
+  })
+
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const keyName = event.key;
@@ -158,7 +181,7 @@ function App() {
   };
 
   const randomText = () => {
-    const matchingTexts = TEXTS.filter(text => text.language === language && text.level === level);
+    const matchingTexts = TEXTS;
     const randomIndex = Math.floor(Math.random() * matchingTexts.length);
     const randomText = matchingTexts[randomIndex];
     setTaskText(randomText ? randomText.value : 'Произошла ошибка');
@@ -167,6 +190,9 @@ function App() {
   useEffect(() => {
     restart()
   }, [language, level]);
+  // добавить запрос к бд и после только рандомно давать один текст (или сразу просить один рандомный текст)
+
+  // можно добавить рекорд приложения и хранить его в бд, проверять как и checkResult() и отправлять новый рекорд вместо старого
 
   useEffect(() => {
     if (error > 0) {
