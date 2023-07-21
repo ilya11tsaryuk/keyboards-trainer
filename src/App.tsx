@@ -4,13 +4,14 @@ import { Box, Button } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 import ScreenLaptop from './Components/ScreenLaptop';
 import MySelect from './Components/MySelect';
-import { LANGUAGE, LEVEL, LIST_BUTTONS, LIST_BUTTONS_PRESS_SHIFT, TEXTS } from './constants';
+import { LANGUAGE, LEVEL, LIST_BUTTONS, LIST_BUTTONS_PRESS_SHIFT, TEXTS, fetchResult, getRecord } from './constants';
 import { useDispatch } from 'react-redux';
 import { removeLetter, setKeyName } from './Redux/keyNameSlice';
 import ModalResult from './Components/ModalResult';
 import TypingInfo from './Components/TypingInfo';
 import { ID_DATA_BASE, SECRET_API_TOKEN } from "./constants";
 import Airtable from 'airtable'
+import Loader from './Components/Loader';
 
 type ObjectTypeText = {
   id: number,
@@ -35,20 +36,33 @@ function App() {
   const [finishTime, setFinishTime] = useState<number>(0);
   const [timer, setTimer] = useState<string>("00:00");
   const [visibleModal, setVisibleModal] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
 
   const dispatch = useDispatch();
 
   const base = new Airtable({ apiKey: SECRET_API_TOKEN }).base(ID_DATA_BASE);
   const filterFormula = `AND(level = "${level}", language = "${language}")`;
 
-  base('tasks').select({
-    filterByFormula: filterFormula,
-  }).eachPage(function page(record, fetchNextPage) {
-    const newText: any = []
-    record.forEach(record => newText.push(record?.fields))
-      setTEXTS(newText)
-      console.log(TEXTS)
-  })
+  const getAllTexts = async () => {
+    return new Promise((resolve, reject) => {
+      base('tasks').select({
+        filterByFormula: filterFormula,
+      }).eachPage(function page(records, fetchNextPage) {
+        const newText: any = [];
+        records.forEach(record => newText.push(record?.fields));
+
+        // Вызываем resolve, чтобы передать результат (newText) обратно после завершения запроса
+        resolve(newText);
+        console.log(newText, 'in promise')
+      }, function done(err) {
+        if (err) {
+          // Вызываем reject, если произошла ошибка
+          reject(err);
+        }
+      });
+    });
+  };
 
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -86,29 +100,7 @@ function App() {
     }
   };
 
-
-
-  const getRecord = () => {
-    try {
-      const recordJSON = localStorage.getItem('typingRecord');
-      return recordJSON ? JSON.parse(recordJSON) : 0;
-    } catch (error) {
-      console.error('Ошибка при получении рекорда из локального хранилища:', error);
-      return null;
-    }
-  };
-
   const record = getRecord()
-
-  // функция отправки результата
-  const fetchResult = (record: number) => {
-    try {
-      const recordJSON = JSON.stringify(record);
-      localStorage.setItem('typingRecord', recordJSON);
-    } catch (error) {
-      console.error('Ошибка при сохранении рекорда в локальное хранилище:', error);
-    }
-  };
 
   // функция проверки результатов и если результат лучше чем есть в сторе то вызвать отправку нового результата
   const checkResult = () => {
@@ -181,15 +173,42 @@ function App() {
   };
 
   const randomText = () => {
-    const matchingTexts = TEXTS;
-    const randomIndex = Math.floor(Math.random() * matchingTexts.length);
-    const randomText = matchingTexts[randomIndex];
-    setTaskText(randomText ? randomText.value : 'Произошла ошибка');
-  }
+    if (TEXTS.length > 0) {
+      const randomIndex = Math.floor(Math.random() * TEXTS.length);
+      const randomText = TEXTS[randomIndex];
+      setTaskText(randomText ? randomText.value : 'Произошла ошибка');
+    }
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        // Получаем тексты с сервера с помощью async/await
+        const texts = await getAllTexts() as ObjectTypeText[]
+        // Устанавливаем полученные тексты в состояние
+        await setTEXTS(texts);
+        console.log(texts, "texts")
+
+        // Вызываем функцию randomText после получения текстов
+        // randomText();
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Ошибка при получении текстов:', error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+
+  }, [language, level]);
 
   useEffect(() => {
-    restart()
-  }, [language, level]);
+    randomText()
+    console.log(TEXTS, "Texts ")
+  }, [TEXTS])
+
+
   // добавить запрос к бд и после только рандомно давать один текст (или сразу просить один рандомный текст)
 
   // можно добавить рекорд приложения и хранить его в бд, проверять как и checkResult() и отправлять новый рекорд вместо старого
@@ -239,7 +258,9 @@ function App() {
       <Button onClick={() => fetchResult(0)}>clean</Button>
       <ModalResult visibleModal={visibleModal} closeModal={closeModal} cpm={cpm} accuracy={accuracy} error={error} />
       <Box sx={{ display: 'flex', gap: 1, marginY: 2 }}>
-        <ScreenLaptop text={text} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} onChange={handleScreen} taskText={`${taskText}`} />
+        {!isLoading ?
+          (<ScreenLaptop text={text} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} onChange={handleScreen} taskText={`${taskText}`} />
+          ) : <Loader />}
         <TypingInfo timer={timer} record={record} cpm={cpm} accuracy={accuracy} error={error} />
       </Box >
       <KeyBoard listButton={buttonList} />
