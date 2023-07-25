@@ -1,6 +1,6 @@
 // описать массив обьектов с языками програмирования и массив уровней сложности
 export const LANGUAGE = [
-    { id: 1, value: "JavaScript" },
+    { id: 1, value: "Javascript" },
     { id: 2, value: "Php" },
     { id: 3, value: "Java" },
     { id: 4, value: "Python" },

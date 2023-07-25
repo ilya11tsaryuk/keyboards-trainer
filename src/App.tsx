@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import KeyBoard from './Components/KeyBoard';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 import ScreenLaptop from './Components/ScreenLaptop';
 import MySelect from './Components/MySelect';
@@ -10,7 +10,7 @@ import { removeLetter, setKeyName } from './Redux/keyNameSlice';
 import ModalResult from './Components/ModalResult';
 import TypingInfo from './Components/TypingInfo';
 import { ID_DATA_BASE, SECRET_API_TOKEN } from "./constants";
-import Airtable from 'airtable'
+import Airtable, { FieldSet } from 'airtable'
 import Loader from './Components/Loader';
 
 type ObjectTypeText = {
@@ -20,41 +20,51 @@ type ObjectTypeText = {
   value: string
 }
 
+type ObjectRecord = {
+  id: string
+  fields: {
+    language: string,
+    record: number
+  }
+}
+
 function App() {
   const [TEXTS, setTEXTS] = useState<ObjectTypeText[]>([])
   const [taskText, setTaskText] = useState<string>('')
   const [text, setText] = useState<string>('')
+  const [globalRecord, setGlobalRecord] = useState<string>("");
+  const [globalRecordID, setGlobalRecordId] = useState<string>("");
   const [cpm, setCpm] = useState<number>(0);
   const [error, setError] = useState<number>(0);
   const [accuracy, setAccuracy] = useState<number>(100);
   const [indexCurrentLiter, setIndexCurrentLiter] = useState<number>(0);
   const [activeLiter, setActiveLiter] = useState<string>("");
-  const [language, setLanguage] = useState<string>('JavaScript')
+  const [language, setLanguage] = useState<string>('Javascript')
   const [level, setLevel] = useState<string>('1')
   const [buttonList, setButtonList] = useState(LIST_BUTTONS);
   const [startTime, setStartTime] = useState<number>(0);
   const [finishTime, setFinishTime] = useState<number>(0);
   const [timer, setTimer] = useState<string>("00:00");
   const [visibleModal, setVisibleModal] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
 
   const dispatch = useDispatch();
 
   const base = new Airtable({ apiKey: SECRET_API_TOKEN }).base(ID_DATA_BASE);
-  const filterFormula = `AND(level = "${level}", language = "${language}")`;
+  const filterTexts = `AND(level = "${level}", language = "${language}")`;
 
   const getAllTexts = async () => {
     return new Promise((resolve, reject) => {
       base('tasks').select({
-        filterByFormula: filterFormula,
+        filterByFormula: filterTexts,
       }).eachPage(function page(records, fetchNextPage) {
         const newText: any = [];
         records.forEach(record => newText.push(record?.fields));
 
         // Вызываем resolve, чтобы передать результат (newText) обратно после завершения запроса
         resolve(newText);
-        console.log(newText, 'in promise')
+        // console.log(newText, 'in promise')
       }, function done(err) {
         if (err) {
           // Вызываем reject, если произошла ошибка
@@ -74,7 +84,7 @@ function App() {
     }
     if (startTime === 0) {
       setStartTime(Date.now());
-      console.log("updated start time");
+      // console.log("updated start time");
     }
     // console.log("Нажата клавиша:", keyName);
   };
@@ -101,6 +111,27 @@ function App() {
   };
 
   const record = getRecord()
+  console.log('cpm', cpm)
+
+  const updateGlobalRecord = async () => {
+    const newRecord = {
+      language: language,
+      record: cpm
+    }
+    try {
+      await base("record").update([
+        {
+          id: globalRecordID,
+          fields: newRecord,
+        },
+      ]);
+      console.log('Запись успешно обновлена в Airtable.');
+    } catch (error) {
+      console.error('Ошибка при обновлении записи в Airtable:', error);
+    }
+    setGlobalRecord(`${cpm}`)
+  };
+
 
   // функция проверки результатов и если результат лучше чем есть в сторе то вызвать отправку нового результата
   const checkResult = () => {
@@ -109,6 +140,9 @@ function App() {
       console.log(newRecord, "newRecord")
       console.log(cpm, "cpm")
       fetchResult(newRecord)
+    }
+    if (accuracy > 95 && Number(globalRecord) < cpm) {
+      // updateGlobalRecord()
     }
   }
 
@@ -179,6 +213,29 @@ function App() {
       setTaskText(randomText ? randomText.value : 'Произошла ошибка');
     }
   };
+
+  // const filterRecord = `(language = "${language}")`;
+
+  const getGlobalRecord = () => {
+    base('record')
+      .select({
+        filterByFormula: `{language} = "${language}"`,
+        maxRecords: 1, // Указываем, что хотим получить только одну запись
+      })
+      .firstPage(function (err, records) {
+        if (err) {
+          console.log('Error:', err);
+        } else {
+          if (records && records.length > 0) {
+            const recordId = records[0].id
+            const record = records[0].fields.record
+            setGlobalRecord(`${record}`)
+            setGlobalRecordId(recordId)
+          }
+        }
+      });
+  };
+  console.log(globalRecordID)
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -187,25 +244,28 @@ function App() {
         const texts = await getAllTexts() as ObjectTypeText[]
         // Устанавливаем полученные тексты в состояние
         await setTEXTS(texts);
-        console.log(texts, "texts")
-
-        // Вызываем функцию randomText после получения текстов
-        // randomText();
-
-        setIsLoading(false);
+        // console.log(texts, "texts")
       } catch (error) {
         console.error('Ошибка при получении текстов:', error);
-        setIsLoading(false);
+        // setIsLoading(false);
+      }
+      finally {
+        setIsLoading(false); // Выполняется всегда, независимо от успешности запроса
       }
     };
 
     fetchData();
+    getGlobalRecord()
 
   }, [language, level]);
 
+  // console.log(isLoading, 'is loading')
+
   useEffect(() => {
     randomText()
-    console.log(TEXTS, "Texts ")
+    setIsLoading(false); // delete this string
+
+    // console.log(TEXTS, "Texts ")
   }, [TEXTS])
 
 
@@ -256,6 +316,14 @@ function App() {
       <Button onClick={restart}>restart</Button>
       <Button onClick={() => setVisibleModal(true)}>open modal</Button>
       <Button onClick={() => fetchResult(0)}>clean</Button>
+      <Button onClick={updateGlobalRecord}>update</Button>
+      <Box sx={{ display: 'flex', alignItems: "center" }}>
+        <Typography sx={{ opacity: 0.5 }}>
+          global record:</Typography>
+        {isLoading ? "loading" : globalRecord}
+      </Box>
+
+
       <ModalResult visibleModal={visibleModal} closeModal={closeModal} cpm={cpm} accuracy={accuracy} error={error} />
       <Box sx={{ display: 'flex', gap: 1, marginY: 2 }}>
         {!isLoading ?
