@@ -20,14 +20,6 @@ type ObjectTypeText = {
   value: string
 }
 
-type ObjectRecord = {
-  id: string
-  fields: {
-    language: string,
-    record: number
-  }
-}
-
 function App() {
   const [TEXTS, setTEXTS] = useState<ObjectTypeText[]>([])
   const [taskText, setTaskText] = useState<string>('')
@@ -142,7 +134,7 @@ function App() {
       fetchResult(newRecord)
     }
     if (accuracy > 95 && Number(globalRecord) < cpm) {
-      // updateGlobalRecord()
+      updateGlobalRecord()
     }
   }
 
@@ -210,6 +202,7 @@ function App() {
     if (TEXTS.length > 0) {
       const randomIndex = Math.floor(Math.random() * TEXTS.length);
       const randomText = TEXTS[randomIndex];
+      console.log(randomText.value, 'random')
       setTaskText(randomText ? randomText.value : 'Произошла ошибка');
     }
   };
@@ -247,7 +240,6 @@ function App() {
         // console.log(texts, "texts")
       } catch (error) {
         console.error('Ошибка при получении текстов:', error);
-        // setIsLoading(false);
       }
       finally {
         setIsLoading(false); // Выполняется всегда, независимо от успешности запроса
@@ -263,7 +255,6 @@ function App() {
 
   useEffect(() => {
     randomText()
-    setIsLoading(false); // delete this string
 
     // console.log(TEXTS, "Texts ")
   }, [TEXTS])
