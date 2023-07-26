@@ -11,7 +11,8 @@ type MySelectProps = {
 const MySelect: React.FC<MySelectProps> = ({ menuItems, styles, handleChange, defaultValue }) => {
     return (
         <Select
-            size="small" sx={styles} value={defaultValue}
+        MenuProps={{style: {borderRadius: 5, margin: 2, backgroundColor: 'black', },}}
+            size="small" sx={{borderRadius: 5, }} value={defaultValue}
             onChange={handleChange} >
             {
                 menuItems.map((menuItem) => (

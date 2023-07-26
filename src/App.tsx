@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import KeyBoard from './Components/KeyBoard';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Paper, Typography, makeStyles } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 import ScreenLaptop from './Components/ScreenLaptop';
 import MySelect from './Components/MySelect';
@@ -12,6 +12,7 @@ import TypingInfo from './Components/TypingInfo';
 import { ID_DATA_BASE, SECRET_API_TOKEN } from "./constants";
 import Airtable, { FieldSet } from 'airtable'
 import Loader from './Components/Loader';
+import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 
 type ObjectTypeText = {
   id: number,
@@ -304,30 +305,37 @@ function App() {
   // const tt = `let num1 = 5;\nlet num2 = 10;\nlet sum = num1 + num2;\nconsole.log("sum: " + sum);`
 
   return (
-    <Box sx={{ width: "60%", margin: 'auto', marginTop: 2 }}>
-      <MySelect defaultValue={language} menuItems={LANGUAGE} styles={{ width: '20%', borderRadius: 5, }} handleChange={handleChangeLanguage} />
-      <MySelect defaultValue={level} menuItems={LEVEL} styles={{ width: '10%', textAlign: 'center', borderRadius: 5 }} handleChange={handleChangeLevel} />
-      <Button onClick={restart}>restart</Button>
-      {/* <Button onClick={() => setVisibleModal(true)}>open modal</Button>
-      <Button onClick={() => fetchResult(0)}>clean</Button>
-      <Button onClick={updateGlobalRecord}>update</Button> */}
-      <Box sx={{ display: 'flex', alignItems: "center" }}>
-        <Typography sx={{ opacity: 0.5 }}>
-          global record:</Typography>
+  <Box sx={{ width: "60%", margin: 'auto', marginTop: 2 }}>
+    <Box component={Paper} sx={{ display: 'flex', alignItems: 'center', gap: 1, padding: 2 }}>
+
+      <MySelect defaultValue={language} menuItems={LANGUAGE} 
+      styles={{ width: '20%', borderRadius: 5, }}
+       handleChange={handleChangeLanguage} />
+      <MySelect defaultValue={level} menuItems={LEVEL}
+       styles={{ width: '10%', textAlign: 'center', borderRadius: 5 }}
+        handleChange={handleChangeLevel} />
+
+      <Button sx={{ border: 1, borderRadius: 5, fontWeight: '1rem' }} onClick={restart}>restart</Button>
+      <Box sx={{ display: 'flex', alignItems: "center", justifyContent: "space-between", border: 1, borderRadius: 5, width: "15%", padding: '6px 8px', color: 'darkgray', ':hover': {color: "black"} }}>
+        <EmojiEventsOutlinedIcon sx={{ opacity: 0.5 }} />
         {isLoading ? "loading" : globalRecord}
       </Box>
+    </Box>
+    {/* <Button onClick={() => setVisibleModal(true)}>open modal</Button>
+      <Button onClick={() => fetchResult(0)}>clean</Button>
+      <Button onClick={updateGlobalRecord}>update</Button> */}
 
 
-      <ModalResult visibleModal={visibleModal} closeModal={closeModal} cpm={cpm} accuracy={accuracy} error={error} />
-      <Box sx={{ display: 'flex', gap: 1, marginY: 2 }}>
-        {!isLoading ?
-          (<ScreenLaptop text={text} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} onChange={handleScreen} taskText={`${taskText}`} />
-          ) : <Loader />}
-        <TypingInfo timer={timer} record={record} cpm={cpm} accuracy={accuracy} error={error} />
-      </Box >
-      <KeyBoard listButton={buttonList} />
+    <ModalResult visibleModal={visibleModal} closeModal={closeModal} cpm={cpm} accuracy={accuracy} error={error} />
+    <Box sx={{ display: 'flex', gap: 1, marginY: 2 }}>
+      {!isLoading ?
+        (<ScreenLaptop text={text} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} onChange={handleScreen} taskText={`${taskText}`} />
+        ) : <Loader />}
+      <TypingInfo timer={timer} record={record} cpm={cpm} accuracy={accuracy} error={error} />
     </Box >
-  );
+    <KeyBoard listButton={buttonList} />
+  </Box >
+);
 }
 
 export default App;
