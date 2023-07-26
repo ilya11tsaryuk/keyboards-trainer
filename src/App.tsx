@@ -22,7 +22,7 @@ type ObjectTypeText = {
 
 function App() {
   const [TEXTS, setTEXTS] = useState<ObjectTypeText[]>([])
-  const [taskText, setTaskText] = useState<string>('')
+  const [taskText, setTaskText] = useState<string>("")
   const [text, setText] = useState<string>('')
   const [globalRecord, setGlobalRecord] = useState<string>("");
   const [globalRecordID, setGlobalRecordId] = useState<string>("");
@@ -201,9 +201,11 @@ function App() {
   const randomText = () => {
     if (TEXTS.length > 0) {
       const randomIndex = Math.floor(Math.random() * TEXTS.length);
-      const randomText = TEXTS[randomIndex];
-      console.log(randomText.value, 'random')
-      setTaskText(randomText ? randomText.value : 'Произошла ошибка');
+      const randomText = TEXTS[randomIndex].value;
+      // console.log(randomText, 'random')
+      // add replace \n \t 
+      const decodedValue = randomText.replace(/\\n/g, '\n').replace(/\\t/g, '\t');
+      setTaskText(decodedValue ? decodedValue : 'Произошла ошибка');
     }
   };
 
@@ -299,15 +301,16 @@ function App() {
     }
   }, [startTime, isFinish, timer]);
 
+  // const tt = `let num1 = 5;\nlet num2 = 10;\nlet sum = num1 + num2;\nconsole.log("sum: " + sum);`
 
   return (
     <Box sx={{ width: "60%", margin: 'auto', marginTop: 2 }}>
-      <MySelect defaultValue={language} menuItems={LANGUAGE} styles={{ width: '20%' }} handleChange={handleChangeLanguage} />
-      <MySelect defaultValue={level} menuItems={LEVEL} styles={{ width: '10%', textAlign: 'center' }} handleChange={handleChangeLevel} />
+      <MySelect defaultValue={language} menuItems={LANGUAGE} styles={{ width: '20%', borderRadius: 5, }} handleChange={handleChangeLanguage} />
+      <MySelect defaultValue={level} menuItems={LEVEL} styles={{ width: '10%', textAlign: 'center', borderRadius: 5 }} handleChange={handleChangeLevel} />
       <Button onClick={restart}>restart</Button>
-      <Button onClick={() => setVisibleModal(true)}>open modal</Button>
+      {/* <Button onClick={() => setVisibleModal(true)}>open modal</Button>
       <Button onClick={() => fetchResult(0)}>clean</Button>
-      <Button onClick={updateGlobalRecord}>update</Button>
+      <Button onClick={updateGlobalRecord}>update</Button> */}
       <Box sx={{ display: 'flex', alignItems: "center" }}>
         <Typography sx={{ opacity: 0.5 }}>
           global record:</Typography>

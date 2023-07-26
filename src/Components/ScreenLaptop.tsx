@@ -44,7 +44,7 @@ const ScreenLaptop: React.FC<ScreenLaptopProps> = ({ taskText, onChange, onKeyDo
             <TextField
                 inputRef={taskTextRef}
                 inputProps={{ id: 'input1', onScroll: handleScroll }} // вот так работает синхронный скрол
-                sx={{ opacity: 0.3, outline: 'none' }}
+                sx={{ opacity: 0.3, outline: 'none', whiteSpace: 'pre-wrap' }}
                 fullWidth multiline
                 minRows={10}
                 maxRows={10}

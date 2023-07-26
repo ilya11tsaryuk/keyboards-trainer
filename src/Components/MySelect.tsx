@@ -10,13 +10,17 @@ type MySelectProps = {
 
 const MySelect: React.FC<MySelectProps> = ({ menuItems, styles, handleChange, defaultValue }) => {
     return (
-        <Select size="small" sx={styles} value={defaultValue} onChange={handleChange}>
-            {menuItems.map((menuItem) => (
-                <MenuItem key={menuItem.id} value={menuItem.value}>
-                    {menuItem.value}
-                </MenuItem>
-            ))}
-        </Select>
+        <Select
+            size="small" sx={styles} value={defaultValue}
+            onChange={handleChange} >
+            {
+                menuItems.map((menuItem) => (
+                    <MenuItem sx={{ borderRadius: 4 }} key={menuItem.id} value={menuItem.value}>
+                        {menuItem.value}
+                    </MenuItem>
+                ))
+            }
+        </Select >
     )
 }
 
