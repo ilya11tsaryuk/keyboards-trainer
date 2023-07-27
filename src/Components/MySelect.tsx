@@ -12,11 +12,11 @@ const MySelect: React.FC<MySelectProps> = ({ menuItems, styles, handleChange, de
     return (
         <Select
             multiline
-            size="small" sx={{}} value={defaultValue} // убрать подсветку при фокусе
+            size="small" value={defaultValue} // убрать подсветку при фокусе
             onChange={handleChange} >
             {
                 menuItems.map((menuItem) => (
-                    <MenuItem sx={{ borderRadius: 4 }} key={menuItem.id} value={menuItem.value}>
+                    <MenuItem sx={{ borderRadius: 2 }} key={menuItem.id} value={menuItem.value}>
                         {menuItem.value.length < 2 ? `${menuItem.type}: ${menuItem.value}` : menuItem.value}
                     </MenuItem>
                 ))

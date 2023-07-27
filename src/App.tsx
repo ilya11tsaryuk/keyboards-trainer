@@ -14,7 +14,7 @@ import Airtable, { FieldSet } from 'airtable'
 import Loader from './Components/Loader';
 import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 import RestartAltOutlinedIcon from '@mui/icons-material/RestartAltOutlined';
-import { darkTheme, lightTheme } from './theme';
+import { darkSecondaryColor, darkTheme, lightBackgroundColor, lightSVGicon, lightSecondaryBG, lightSecondaryColor, lightTheme } from './theme';
 import { Global, css } from '@emotion/react';
 
 type ObjectTypeText = {
@@ -55,6 +55,7 @@ function App() {
     background-color: ${theme.palette.background.default};
   }
 `;
+
 
   const dispatch = useDispatch();
 
@@ -323,8 +324,8 @@ function App() {
     <ThemeProvider theme={theme}>
       <Global styles={globalStyles} />
       <Box sx={{ width: "60%", margin: 'auto' }}>
-        <Box component={Paper} sx={{ display: 'flex', alignItems: 'center', padding: 2, justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', paddingTop: 3, justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
             <Switch checked={theme === lightTheme ? false : true} onChange={changeTheme} />
             <MySelect defaultValue={language} menuItems={LANGUAGE}
               styles={{ width: '20%', borderRadius: 5, }}
@@ -332,24 +333,29 @@ function App() {
             <MySelect defaultValue={level} menuItems={LEVEL}
               styles={{ width: '10%', textAlign: 'center', borderRadius: 5 }}
               handleChange={handleChangeLevel} />
-            <IconButton sx={{ border: 1, color: 'darkgray', ':hover': { color: "black" } }} onClick={restart}><RestartAltOutlinedIcon /></IconButton>
+            <IconButton onClick={restart}><RestartAltOutlinedIcon /></IconButton>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: "center", justifyContent: "space-between", border: 1, borderRadius: 5, width: "15%", padding: '6px 8px', }}>
-            <EmojiEventsOutlinedIcon sx={{ opacity: 0.5 }} />
-            {isLoading ? "loading" : globalRecord}
-          </Box>
+          <Button
+            sx={{
+              width: '20%', border: 1, fontWeight: 'bold',
+              borderRadius: "10px", padding: -1, fontSize: "large", paddingY: "8px" , lineHeight: 'inherit',
+              backgroundColor: `${theme.palette.mode === 'dark' ? darkSecondaryColor : lightSecondaryBG}`
+            }} disabled>
+            <EmojiEventsOutlinedIcon sx={{ color:  lightSVGicon, opacity: 0.5, marginRight: 1, }} />
+            {globalRecord}
+          </Button>
         </Box>
-        {/* <Button onClick={() => setVisibleModal(true)}>open modal</Button>
-      <Button onClick={() => fetchResult(0)}>clean</Button>
-      <Button onClick={updateGlobalRecord}>update</Button> */}
+        {/* <Button onClick={() => setVisibleModal(true)}>open modal</Button> */}
+      {/* <Button onClick={() => fetchResult(0)}>clean</Button> */}
+      {/* <Button onClick={updateGlobalRecord}>update</Button> */}
 
 
         <ModalResult visibleModal={visibleModal} closeModal={closeModal} cpm={cpm} accuracy={accuracy} error={error} />
         <Box sx={{ display: 'flex', gap: 1, marginY: 2, }}>
           {/* добавляется высота после загрузки */}
-          {!isLoading ?
-            (<ScreenLaptop text={text} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} onChange={handleScreen} taskText={`${taskText}`} />
-            ) : <Loader />}
+
+          <ScreenLaptop text={text} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} onChange={handleScreen} taskText={`${taskText}`} />
+
           <TypingInfo timer={timer} record={record} cpm={cpm} accuracy={accuracy} error={error} />
         </Box >
         <KeyBoard listButton={buttonList} />

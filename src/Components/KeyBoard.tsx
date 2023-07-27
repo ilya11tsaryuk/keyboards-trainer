@@ -1,11 +1,15 @@
 import { Button, Grid, } from "@mui/material";
 import { useSelector } from "react-redux";
+import { useTheme } from "@mui/material";
 
 type PropsKeyBoard = {
     listButton: { id: number, value: string }[];
 }
 
 const KeyBoard: React.FC<PropsKeyBoard> = ({ listButton }) => {
+
+    const theme = useTheme()
+    const isDarkMode = theme.palette.mode === 'dark'
 
     // получать букву из стора и записывать ее в активную букву
     const key = useSelector((state: any) => state.keyName)
@@ -55,11 +59,15 @@ const KeyBoard: React.FC<PropsKeyBoard> = ({ listButton }) => {
             {listButton.map((button) => (
                 <Grid sx={{ width: getButtonWidth(button?.value), textAlign: 'center', marginY: "2px" }} item key={button.id}>
                     <Button
+                        disabled
                         size="small" key={button.id}
-                        sx={{ border: 1, minWidth: `95%`,
-                        //  backgroundColor: `${activeLiter === button?.value ? "blue" : "white"}` 
+                        sx={{
+                            border: 1, minWidth: `95%`,
+                            backgroundColor: `${isDarkMode ? activeLiter === button?.value ?
+                                "grey" : "" :
+                                activeLiter === button?.value ? "blue" : ""}`
                         }}
-                        >
+                    >
                         {button?.value}
                     </Button>
                 </Grid>
