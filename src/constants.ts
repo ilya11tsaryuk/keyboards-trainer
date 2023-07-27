@@ -1,16 +1,16 @@
 // описать массив обьектов с языками програмирования и массив уровней сложности
 export const LANGUAGE = [
-    { id: 1, value: "Javascript" },
-    { id: 2, value: "Php" },
-    { id: 3, value: "Java" },
-    { id: 4, value: "Python" },
-    { id: 5, value: "Go" }
+    { id: 1, value: "Javascript", type: "Language" },
+    { id: 2, value: "Php", type: "Language" },
+    { id: 3, value: "Java", type: "Language" },
+    { id: 4, value: "Python", type: "Language" },
+    { id: 5, value: "Go", type: "Language" }
 ]
 
 export const LEVEL = [
-    { id: 1, value: "1" },
-    { id: 2, value: "2" },
-    { id: 3, value: "3" },
+    { id: 1, value: "1", type: "Level" },
+    { id: 2, value: "2", type: "Level" },
+    { id: 3, value: "3", type: "Level" },
 ]
 
 export const getRecord = () => {
@@ -34,16 +34,6 @@ export const fetchResult = (record: number) => {
 
 export const SECRET_API_TOKEN = 'patcWFaHJWHMXh3lp.6df4c2708c156e1be93ec43d54b70642c7820b8a3db94c85fd23cd95668e7757'
 export const ID_DATA_BASE = 'appc46kCCAD8EzjgZ'
-
-export const TEXTS = [
-    { id: 1, language: "JavaScript", level: '2', value: `` },
-    { id: 2, language: "Go", level: '1', value: "фрагмент кода на языке Go" },
-    { id: 3, language: "Python", level: '1', value: "фрагмент кода на языке Python" },
-    {
-        id: 4, language: "Java", level: '1', value: ` `
-    },
-    { id: 5, language: "Php", level: '1', value: "фрагмент кода на языке Php" },
-]
 
 export const LIST_BUTTONS = [
 

@@ -56,7 +56,10 @@ const KeyBoard: React.FC<PropsKeyBoard> = ({ listButton }) => {
                 <Grid sx={{ width: getButtonWidth(button?.value), textAlign: 'center', marginY: "2px" }} item key={button.id}>
                     <Button
                         size="small" key={button.id}
-                        sx={{ border: 1, minWidth: `95%`, backgroundColor: `${activeLiter === button?.value ? "blue" : "white"}` }}>
+                        sx={{ border: 1, minWidth: `95%`,
+                        //  backgroundColor: `${activeLiter === button?.value ? "blue" : "white"}` 
+                        }}
+                        >
                         {button?.value}
                     </Button>
                 </Grid>
