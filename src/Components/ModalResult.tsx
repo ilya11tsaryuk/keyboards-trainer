@@ -1,14 +1,25 @@
 import React from "react";
 import { Box, Button, Modal, Typography, useTheme } from "@mui/material";
+import { ReduxType } from "./types";
 import {
   darkBackgroundColor,
   darkBorder,
   lightBackgroundColor,
 } from "../theme";
+import { useSelector } from "react-redux";
 
-const ModalResult = ({ visibleModal, closeModal, cpm, accuracy, error }) => {
+type ModalResultProps = {
+  visibleModal: boolean;
+  closeModal: () => void
+}
+
+const ModalResult: React.FC<ModalResultProps> = ({ visibleModal, closeModal}) => {
   const theme = useTheme();
   const isDarkTheme = theme.palette.mode === "dark";
+
+  const cpm = useSelector((state: ReduxType) => state.typing.cpm);
+  const error = useSelector((state: ReduxType) => state.typing.error);
+  const accuracy = useSelector((state: ReduxType) => state.typing.accuracy);
 
   return (
     <Modal open={visibleModal} onClose={closeModal}>

@@ -1,4 +1,4 @@
-// typingSlice.js
+
 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 

@@ -2,11 +2,12 @@ import React from "react";
 import { Button, useTheme } from "@mui/material"
 import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 import { darkSecondaryColor, lightSVGicon, lightSecondaryBG } from "../theme";
+import { useSelector } from "react-redux";
+import { ReduxType } from "./types";
 
-type GlobalRecordProps = {
-    globalRecord: string
-}
-const GlobalRecord: React.FC<GlobalRecordProps> = ({globalRecord}) => {
+
+const GlobalRecord: React.FC = () => {
+    const globalRecord = useSelector((state: ReduxType) => state.mainInfo.globalRecord);
 
     const theme = useTheme()
     const isDarkTheme = theme.palette.mode === "dark"

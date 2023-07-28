@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { useSelector } from 'react-redux';
 import { useTheme } from "@mui/material";
 import { darkBorder, darkSecondaryColor, lightBorder, lightSecondaryBG } from "../theme";
-import { getRecord } from "../constants";
+import { getRecord } from "../functions";
 import { ReduxType } from "./types";
 
 const TypingInfo = () => {

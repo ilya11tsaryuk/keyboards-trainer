@@ -1,8 +1,5 @@
 import { Box, TextField } from "@mui/material";
-import React, { useState, useRef } from "react";
-import { CSSProperties } from 'react';
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { dark, vs } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import React, { useRef } from "react";
 
 type ScreenLaptopProps = {
     text: string
@@ -13,15 +10,6 @@ type ScreenLaptopProps = {
 }
 
 const ScreenLaptop: React.FC<ScreenLaptopProps> = ({ taskText, onChange, onKeyDown, onKeyUp, text }) => {
-
-    const inputStyle = {
-        height: "100%",
-        alignItems: 'start',
-        // overflow: 'auto',
-        // border: "none"
-    };
-
-
     const taskTextRef = useRef<HTMLInputElement>(null);
     const textRef = useRef<HTMLInputElement>(null);
 

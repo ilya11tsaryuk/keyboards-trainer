@@ -13,30 +13,14 @@ export const LEVEL = [
     { id: 3, value: "3", type: "Level" },
 ]
 
-export const getRecord = () => {
-    try {
-        const recordJSON = localStorage.getItem('typingRecord');
-        return recordJSON ? JSON.parse(recordJSON) : 0;
-    } catch (error) {
-        console.error('Ошибка при получении рекорда из локального хранилища:', error);
-        return null;
-    }
-};
 
-export const fetchResult = (record: number) => {
-    try {
-        const recordJSON = JSON.stringify(record);
-        localStorage.setItem('typingRecord', recordJSON);
-    } catch (error) {
-        console.error('Ошибка при сохранении рекорда в локальное хранилище:', error);
-    }
-};
+
+
 
 export const SECRET_API_TOKEN = 'patcWFaHJWHMXh3lp.6df4c2708c156e1be93ec43d54b70642c7820b8a3db94c85fd23cd95668e7757'
 export const ID_DATA_BASE = 'appc46kCCAD8EzjgZ'
 
 export const LIST_BUTTONS = [
-
     { id: 46, value: "`" },
     { id: 47, value: "1" },
     { id: 48, value: "2" },
