@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import KeyBoard from './Components/KeyBoard';
-import { Box, Button, IconButton, ThemeProvider, Switch } from '@mui/material';
+import { Box, Button, IconButton, ThemeProvider, Switch, useTheme } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 import ScreenLaptop from './Components/ScreenLaptop';
 import MySelect from './Components/MySelect';
@@ -12,12 +12,13 @@ import TypingInfo from './Components/TypingInfo';
 import { ID_DATA_BASE, SECRET_API_TOKEN } from "./constants";
 import Airtable from 'airtable'
 import RestartAltOutlinedIcon from '@mui/icons-material/RestartAltOutlined';
-import { darkTheme, lightTheme } from './theme';
+import { darkBackgroundColor, darkTheme, lightBackgroundColor, lightTheme } from './theme';
 import { Global, css } from '@emotion/react';
 import GlobalRecord from './Components/GlobalRecord';
 import { setCpm, setTimer, setAccuracy, setError } from './Redux/typingSlice';
 import { useSelector } from 'react-redux';
 import { ReduxType } from './Components/types';
+import { setTheme } from './Redux/mainInfo';
 
 
 type ObjectTypeText = {
@@ -30,16 +31,21 @@ type ObjectTypeText = {
 
 
 function App() {
-  const [theme, setTheme] = useState<typeof lightTheme>(darkTheme)
+  // const [theme, setTheme] = useState<typeof lightTheme>(darkTheme)
+  const [language, setLanguage] = useState<string>('Javascript')
+  const [level, setLevel] = useState<string>('1')
+  const [globalRecord, setGlobalRecord] = useState<string>("");
+  const [globalRecordID, setGlobalRecordId] = useState<string>("");
+
+  const themeColor = useSelector((state: ReduxType) => state.mainInfo.theme);
+  const currentTheme = themeColor === 'dark' ? darkTheme : lightTheme
+
+  console.log(themeColor)
   const [TEXTS, setTEXTS] = useState<ObjectTypeText[]>([])
   const [taskText, setTaskText] = useState<string>("")
   const [text, setText] = useState<string>('')
-  const [globalRecord, setGlobalRecord] = useState<string>("");
-  const [globalRecordID, setGlobalRecordId] = useState<string>("");
   const [indexCurrentLiter, setIndexCurrentLiter] = useState<number>(0);
   const [activeLiter, setActiveLiter] = useState<string>("");
-  const [language, setLanguage] = useState<string>('Javascript')
-  const [level, setLevel] = useState<string>('1')
   const [buttonList, setButtonList] = useState(LIST_BUTTONS);
   const [startTime, setStartTime] = useState<number>(0);
   const [finishTime, setFinishTime] = useState<number>(0);
@@ -48,20 +54,22 @@ function App() {
   const record = getRecord()
 
   const cpm = useSelector((state: ReduxType) => state.typing.cpm);
-   const timer = useSelector((state: ReduxType) => state.typing.timer);
+  const timer = useSelector((state: ReduxType) => state.typing.timer);
   const error = useSelector((state: ReduxType) => state.typing.error);
   const accuracy = useSelector((state: ReduxType) => state.typing.accuracy);
-  const changeTheme = () => {
-    const newTheme = theme === lightTheme ? darkTheme : lightTheme
-    setTheme(newTheme)
-  }
+  
 
+  // theme /////////////////////////
+  const changeTheme = () => {
+    const newTheme = themeColor === 'dark' ? "light" : "dark"
+    dispatch(setTheme(newTheme))
+  }
   const globalStyles = css`
   body {
-    background-color: ${theme.palette.background.default};
+    background-color: ${themeColor === 'dark' ? darkBackgroundColor : lightBackgroundColor};
   }
 `;
-
+/////////////////////////
 
   const dispatch = useDispatch();
 
@@ -124,7 +132,7 @@ function App() {
     }
   };
 
-  console.log('cpm', cpm)
+  // console.log('cpm', cpm)
 
   const updateGlobalRecord = async () => {
     const newRecord = {
@@ -138,9 +146,9 @@ function App() {
           fields: newRecord,
         },
       ]);
-      console.log('Запись успешно обновлена в Airtable.');
+      // console.log('Запись успешно обновлена в Airtable.');
     } catch (error) {
-      console.error('Ошибка при обновлении записи в Airtable:', error);
+      // console.error('Ошибка при обновлении записи в Airtable:', error);
     }
     setGlobalRecord(`${cpm}`)
   };
@@ -150,8 +158,8 @@ function App() {
   const checkResult = () => {
     if (accuracy > 95 && record < cpm) {
       const newRecord = cpm
-      console.log(newRecord, "newRecord")
-      console.log(cpm, "cpm")
+      // console.log(newRecord, "newRecord")
+      // console.log(cpm, "cpm")
       fetchResult(newRecord)
     }
     if (accuracy > 95 && Number(globalRecord) < cpm) {
@@ -241,7 +249,7 @@ function App() {
       })
       .firstPage(function (err, records) {
         if (err) {
-          console.log('Error:', err);
+          // console.log('Error:', err);
         } else {
           if (records && records.length > 0) {
             const recordId = records[0].id
@@ -252,7 +260,7 @@ function App() {
         }
       });
   };
-  console.log(globalRecordID)
+  // console.log(globalRecordID)
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -323,18 +331,16 @@ function App() {
     }
   }, [startTime, isFinish, timer]);
 
-  // const tt = `let num1 = 5;\nlet num2 = 10;\nlet sum = num1 + num2;\nconsole.log("sum: " + sum);`
-
   return (
     // добавить отступы чтоб не появлялся скролл
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={currentTheme}>
       <Global styles={globalStyles} />
 
       <Box sx={{ width: "60%", margin: 'auto' }}>
 
         <Box sx={{ display: 'flex', alignItems: 'center', paddingTop: 3, justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            <Switch checked={theme === lightTheme ? false : true} onChange={changeTheme} />
+            <Switch checked={themeColor === 'dark' ? true : false} onChange={changeTheme} />
             <MySelect defaultValue={language} menuItems={LANGUAGE}
               styles={{ width: '20%', borderRadius: 5, }}
               handleChange={handleChangeLanguage} />
