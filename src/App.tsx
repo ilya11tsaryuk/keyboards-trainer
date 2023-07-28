@@ -352,7 +352,7 @@ function App() {
 
         <Box sx={{ display: 'flex', gap: 1, marginY: 2, }}>
           <ScreenLaptop text={text} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} onChange={handleScreen} taskText={`${taskText}`} />
-          <TypingInfo timer={timer} record={record} cpm={cpm} accuracy={accuracy} error={error} />
+          <TypingInfo />
         </Box >
 
         <KeyBoard listButton={buttonList} />
