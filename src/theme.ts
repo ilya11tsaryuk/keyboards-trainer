@@ -65,7 +65,8 @@ export const lightTheme = createTheme({
                 style: {
                     fontFamily: "verdana",
                     // letterSpacing: '0.02em',
-                    color: 'red'
+                    // color: 'red'
+                    color: 'black'
                 },
             }
         },
@@ -141,7 +142,8 @@ export const darkTheme = createTheme({
                 style: {
                     fontFamily: "verdana",
                     // letterSpacing: '0.07em',
-                    color: 'rgba(245, 66, 78, 1)'
+                    // color: 'rgba(245, 66, 78, 1)'
+                    color: 'white'
                 },
             }
         },
@@ -154,3 +156,4 @@ export const darkTheme = createTheme({
         },
     }
 })
+

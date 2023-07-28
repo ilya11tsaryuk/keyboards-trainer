@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import KeyBoard from './Components/KeyBoard';
-import { Box, Button, IconButton, Paper, Typography, makeStyles, ThemeProvider, Switch } from '@mui/material';
+import { Box, Button, IconButton, ThemeProvider, Switch } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 import ScreenLaptop from './Components/ScreenLaptop';
 import MySelect from './Components/MySelect';
@@ -10,12 +10,15 @@ import { removeLetter, setKeyName } from './Redux/keyNameSlice';
 import ModalResult from './Components/ModalResult';
 import TypingInfo from './Components/TypingInfo';
 import { ID_DATA_BASE, SECRET_API_TOKEN } from "./constants";
-import Airtable, { FieldSet } from 'airtable'
-import Loader from './Components/Loader';
-import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
+import Airtable from 'airtable'
 import RestartAltOutlinedIcon from '@mui/icons-material/RestartAltOutlined';
-import { darkSecondaryColor, darkTheme, lightBackgroundColor, lightSVGicon, lightSecondaryBG, lightSecondaryColor, lightTheme } from './theme';
+import { darkTheme, lightTheme } from './theme';
 import { Global, css } from '@emotion/react';
+import GlobalRecord from './Components/GlobalRecord';
+import { setCpm, setTimer, setAccuracy, setError } from './Redux/typingSlice';
+import { useSelector } from 'react-redux';
+import { ReduxType } from './Components/types';
+
 
 type ObjectTypeText = {
   id: number,
@@ -24,16 +27,15 @@ type ObjectTypeText = {
   value: string
 }
 
+
+
 function App() {
-  const [theme, setTheme] = useState<typeof lightTheme>(lightTheme)
+  const [theme, setTheme] = useState<typeof lightTheme>(darkTheme)
   const [TEXTS, setTEXTS] = useState<ObjectTypeText[]>([])
   const [taskText, setTaskText] = useState<string>("")
   const [text, setText] = useState<string>('')
   const [globalRecord, setGlobalRecord] = useState<string>("");
   const [globalRecordID, setGlobalRecordId] = useState<string>("");
-  const [cpm, setCpm] = useState<number>(0);
-  const [error, setError] = useState<number>(0);
-  const [accuracy, setAccuracy] = useState<number>(100);
   const [indexCurrentLiter, setIndexCurrentLiter] = useState<number>(0);
   const [activeLiter, setActiveLiter] = useState<string>("");
   const [language, setLanguage] = useState<string>('Javascript')
@@ -41,10 +43,14 @@ function App() {
   const [buttonList, setButtonList] = useState(LIST_BUTTONS);
   const [startTime, setStartTime] = useState<number>(0);
   const [finishTime, setFinishTime] = useState<number>(0);
-  const [timer, setTimer] = useState<string>("00:00");
   const [visibleModal, setVisibleModal] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const record = getRecord()
 
+  const cpm = useSelector((state: ReduxType) => state.typing.cpm);
+   const timer = useSelector((state: ReduxType) => state.typing.timer);
+  const error = useSelector((state: ReduxType) => state.typing.error);
+  const accuracy = useSelector((state: ReduxType) => state.typing.accuracy);
   const changeTheme = () => {
     const newTheme = theme === lightTheme ? darkTheme : lightTheme
     setTheme(newTheme)
@@ -118,7 +124,6 @@ function App() {
     }
   };
 
-  const record = getRecord()
   console.log('cpm', cpm)
 
   const updateGlobalRecord = async () => {
@@ -173,32 +178,33 @@ function App() {
         setIndexCurrentLiter((prev) => prev + 1)
       }
       if (activeLiter !== taskText[indexCurrentLiter]) {
-        setError((prev) => prev + 1)
+        dispatch(setError(error + 1))
       }
     }
   }
 
   const getAccuracy = () => {
     const newAccuracy = Math.floor(100 - (error / taskText.length * 100))
-    setAccuracy(newAccuracy)
+    dispatch(setAccuracy(newAccuracy))
   }
 
   const getSpeed = () => {
     const currentTime = (Date.now() - startTime) / 1000
     const lettersCount = text.length;
     const speedValue = Math.floor((lettersCount / currentTime) * 60);
-    setCpm(speedValue);
+    dispatch(setCpm(speedValue))
+    // setCpm(speedValue);
   };
 
   const restart = () => {
     setActiveLiter("")
     setIndexCurrentLiter(0)
     setStartTime(0)
-    setAccuracy(100)
-    setCpm(0)
-    setError(0)
+    dispatch(setAccuracy(100))
+    dispatch(setCpm(0))
+    dispatch(setError(0))
     setText("")
-    setTimer("00:00")
+    dispatch(setTimer("00:00"))
     randomText()
   }
 
@@ -301,7 +307,7 @@ function App() {
     const newSeconds = totalSeconds % 60;
     const formattedTime = `${formatTime(newMinutes)}:${formatTime(newSeconds)}`;
 
-    setTimer(formattedTime);
+    dispatch(setTimer(formattedTime));
   };
 
   useEffect(() => {
@@ -323,7 +329,9 @@ function App() {
     // добавить отступы чтоб не появлялся скролл
     <ThemeProvider theme={theme}>
       <Global styles={globalStyles} />
+
       <Box sx={{ width: "60%", margin: 'auto' }}>
+
         <Box sx={{ display: 'flex', alignItems: 'center', paddingTop: 3, justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
             <Switch checked={theme === lightTheme ? false : true} onChange={changeTheme} />
@@ -335,30 +343,20 @@ function App() {
               handleChange={handleChangeLevel} />
             <IconButton onClick={restart}><RestartAltOutlinedIcon /></IconButton>
           </Box>
-          <Button
-            sx={{
-              width: '20%', border: 1, fontWeight: 'bold',
-              borderRadius: "10px", padding: -1, fontSize: "large", paddingY: "8px" , lineHeight: 'inherit',
-              backgroundColor: `${theme.palette.mode === 'dark' ? darkSecondaryColor : lightSecondaryBG}`
-            }} disabled>
-            <EmojiEventsOutlinedIcon sx={{ color:  lightSVGicon, opacity: 0.5, marginRight: 1, }} />
-            {globalRecord}
-          </Button>
+          <GlobalRecord globalRecord={globalRecord} />
         </Box>
         {/* <Button onClick={() => setVisibleModal(true)}>open modal</Button> */}
-      {/* <Button onClick={() => fetchResult(0)}>clean</Button> */}
-      {/* <Button onClick={updateGlobalRecord}>update</Button> */}
+        {/* <Button onClick={() => fetchResult(0)}>clean</Button> */}
+        {/* <Button onClick={updateGlobalRecord}>update</Button> */}
 
 
-        <ModalResult visibleModal={visibleModal} closeModal={closeModal} cpm={cpm} accuracy={accuracy} error={error} />
         <Box sx={{ display: 'flex', gap: 1, marginY: 2, }}>
-          {/* добавляется высота после загрузки */}
-
           <ScreenLaptop text={text} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} onChange={handleScreen} taskText={`${taskText}`} />
-
           <TypingInfo timer={timer} record={record} cpm={cpm} accuracy={accuracy} error={error} />
         </Box >
+
         <KeyBoard listButton={buttonList} />
+        <ModalResult visibleModal={visibleModal} closeModal={closeModal} cpm={cpm} accuracy={accuracy} error={error} />
       </Box >
     </ThemeProvider>
 
