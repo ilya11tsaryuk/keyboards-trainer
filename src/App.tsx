@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ThemeProvider } from '@mui/material';
+import { ThemeProvider, Box, Typography } from '@mui/material';
 import { LIST_BUTTONS, LIST_BUTTONS_PRESS_SHIFT } from './constants';
 import { useDispatch } from 'react-redux';
 import { removeLetter, setKeyName } from './Redux/keyNameSlice';
@@ -13,6 +13,7 @@ import { ReduxType } from './Components/types';
 import { setGlobalRecord, setGlobalRecordID } from './Redux/mainInfo';
 import { fetchResult, formatTime, getRecord } from './functions';
 import Container from './Components/Container';
+import { isMobile } from 'react-device-detect';
 
 type ObjectTypeText = {
   id: number,
@@ -265,6 +266,8 @@ function App() {
       return () => clearInterval(intervalTime);
     }
   }, [startTime, isFinish, timer]);
+
+  if (isMobile) return <Box sx={{height: '100vh', display: 'flex'}}><Typography sx={{margin: 'auto'}}>This application for  laptop</Typography></Box>
 
   return (
     <ThemeProvider theme={currentTheme}>
