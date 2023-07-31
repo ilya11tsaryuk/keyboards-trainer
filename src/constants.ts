@@ -2,9 +2,7 @@
 export const LANGUAGE = [
     { id: 1, value: "Javascript", type: "Language" },
     { id: 2, value: "Php", type: "Language" },
-    { id: 3, value: "Java", type: "Language" },
-    { id: 4, value: "Python", type: "Language" },
-    { id: 5, value: "Go", type: "Language" }
+    { id: 3, value: "Python", type: "Language" },
 ]
 
 export const LEVEL = [
